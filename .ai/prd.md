@@ -267,7 +267,7 @@ Existing tools don't adapt to user skill levels or provide guidance for improvem
 - Acceptance Criteria:
   - User can change username (subject to uniqueness)
   - User can toggle profile visibility (public/private)
-  - User can update email address (requires reverification)
+  - User can view their email address (read-only, cannot be changed)
   - User can change password (requires current password)
   - Changes are saved with confirmation message
   - User can delete account with confirmation dialog

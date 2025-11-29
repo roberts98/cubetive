@@ -265,7 +265,7 @@ The application uses **feature-based routing** with public and protected routes,
 - Current username with edit option
 - Profile visibility toggle (public/private as per US-017)
 - Public profile URL (if public) with copy button
-- Email address (editable, requires reverification as per US-005)
+- Email address (read-only, cannot be changed)
 - Password change section (requires current password)
 - Account statistics (total solves, account age, join date)
 - Danger zone: Account deletion button
@@ -274,7 +274,7 @@ The application uses **feature-based routing** with public and protected routes,
 - `UsernameEditForm` - Text field with validation (3-30 chars, alphanumeric + underscore/hyphen as per API plan)
 - `VisibilityToggle` - Switch with explanation modal ("What will be shared?")
 - `ProfileURLDisplay` - Read-only URL with copy button and success toast
-- `EmailEditForm` - Email input with reverification notice
+- `EmailDisplay` - Read-only email address display (cannot be edited)
 - `PasswordChangeForm` - Current password, new password, confirm fields
 - `AccountStatsCard` - Read-only display of account metrics
 - `DeleteAccountDialog` - Multi-step confirmation with warning text
@@ -284,7 +284,7 @@ The application uses **feature-based routing** with public and protected routes,
 - Clear explanation of public profile visibility (modal with preview)
 - Username uniqueness validation on blur (API check)
 - Password change requires current password (prevent session hijacking)
-- Email change triggers reverification (security as per US-005)
+- Email is displayed as read-only (cannot be changed by users)
 - Delete account requires typing "DELETE" to confirm (prevent accidents)
 - All settings saved with explicit save button (no auto-save for account changes)
 - Toast notifications for successful changes
@@ -961,7 +961,7 @@ return <Outlet />;
 ---
 
 #### `ProfileSettingsForm`
-**Purpose**: Edit profile settings (username, visibility, email, password)
+**Purpose**: Edit profile settings (username, visibility, password)
 
 **Props**: `initialValues: ProfileFormData`, `onSave: (updates: ProfileUpdateCommand) => Promise<void>`
 
@@ -969,14 +969,13 @@ return <Outlet />;
 - Organized sections: Profile, Account, Privacy, Danger Zone
 - Username field with uniqueness validation (debounced API check)
 - Visibility toggle with info modal ("What will be shared?")
-- Email change with reverification notice
+- Email display (read-only, cannot be changed)
 - Password change section (expandable accordion)
 - Save button (saves only changed fields)
 - Success toast on save
 
 **Validation**:
 - Username: 3-30 chars, alphanumeric + `_` + `-`, unique
-- Email: Valid format, unique
 - Password: Same as registration requirements
 
 ---
