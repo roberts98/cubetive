@@ -1,12 +1,12 @@
-import { Box, Container, Typography, Paper } from '@mui/material';
+import { Container, Paper, Typography, Box } from '@mui/material';
 import { Link as RouterLink } from 'react-router-dom';
-import RegisterForm from '../components/RegisterForm';
-import type { RegisterFormData } from '../schemas/auth.schemas';
+import ResetPasswordRequestForm from '../components/ResetPasswordRequestForm';
+import type { ResetPasswordRequestFormData } from '../schemas/auth.schemas';
 
-function RegisterPage() {
-  const handleSubmit = async (data: RegisterFormData) => {
+function ResetPasswordPage() {
+  const handleSubmit = async (data: ResetPasswordRequestFormData) => {
     // This will be implemented with Supabase in the next step
-    console.log('Registration attempt:', data);
+    console.log('Reset password request:', data);
     // Placeholder - simulate API call
     await new Promise((resolve) => setTimeout(resolve, 1000));
   };
@@ -15,14 +15,14 @@ function RegisterPage() {
     <Container maxWidth="sm" sx={{ mt: 8, mb: 4 }}>
       <Paper elevation={3} sx={{ p: 4 }}>
         <Typography variant="h4" component="h1" gutterBottom align="center">
-          Sign Up
+          Reset Your Password
         </Typography>
 
-        <RegisterForm onSubmit={handleSubmit} />
+        <ResetPasswordRequestForm onSubmit={handleSubmit} />
 
         <Box sx={{ mt: 3, textAlign: 'center' }}>
           <Typography variant="body2">
-            Already have an account?{' '}
+            Remember your password?{' '}
             <Typography
               component={RouterLink}
               to="/login"
@@ -32,7 +32,7 @@ function RegisterPage() {
                 '&:hover': { textDecoration: 'underline' },
               }}
             >
-              Login
+              Back to Login
             </Typography>
           </Typography>
         </Box>
@@ -41,4 +41,4 @@ function RegisterPage() {
   );
 }
 
-export default RegisterPage;
+export default ResetPasswordPage;
