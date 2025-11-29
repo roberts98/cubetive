@@ -1,6 +1,6 @@
 import { getCurrentUserProfile } from '../services/profileService';
-import { useAsync } from './useAsync';
-import type { ProfileDTO } from '../types';
+import { useAsync } from '../../../shared/hooks/useAsync';
+import type { ProfileDTO } from '../../../types';
 
 /**
  * Custom React hook for fetching and managing the current user's profile.

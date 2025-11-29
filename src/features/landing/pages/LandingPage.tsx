@@ -2,8 +2,8 @@ import { Box, Container, Typography } from '@mui/material';
 import TimerIcon from '@mui/icons-material/Timer';
 import BarChartIcon from '@mui/icons-material/BarChart';
 import ShareIcon from '@mui/icons-material/Share';
-import { Hero, FeatureCard } from '../components/landing';
-import { Footer } from '../components/layout';
+import { Hero, FeatureCard } from '../components';
+import { Footer } from '../../../shared/components';
 
 function LandingPage() {
   const features = [

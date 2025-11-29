@@ -1,11 +1,11 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { getCurrentUserProfile } from '../profileService';
-import { supabase } from '../../db/supabase';
-import type { ProfileDTO } from '../../types';
+import { getCurrentUserProfile } from './profileService';
+import { supabase } from '../../../db/supabase';
+import type { ProfileDTO } from '../../../types';
 import type { User, AuthError } from '@supabase/supabase-js';
 
 // Mock the Supabase client
-vi.mock('../../db/supabase', () => ({
+vi.mock('../../../db/supabase', () => ({
   supabase: {
     auth: {
       getUser: vi.fn(),

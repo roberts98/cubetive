@@ -1,5 +1,5 @@
-import { supabase } from '../db/supabase';
-import type { ProfileDTO } from '../types';
+import { supabase } from '../../../db/supabase';
+import type { ProfileDTO } from '../../../types';
 
 /**
  * Fetches the authenticated user's complete profile data from Supabase.
