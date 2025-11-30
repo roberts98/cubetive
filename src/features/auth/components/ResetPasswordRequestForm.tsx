@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useForm, Controller } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Box, TextField, Button, Alert, CircularProgress, Typography } from '@mui/material';
 import {
@@ -16,7 +16,7 @@ function ResetPasswordRequestForm({ onSubmit }: ResetPasswordRequestFormProps) {
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
   const {
-    control,
+    register,
     handleSubmit,
     reset,
     formState: { errors, isSubmitting },
@@ -63,26 +63,20 @@ function ResetPasswordRequestForm({ onSubmit }: ResetPasswordRequestFormProps) {
         </Alert>
       )}
 
-      <Controller
-        name="email"
-        control={control}
-        render={({ field }) => (
-          <TextField
-            {...field}
-            fullWidth
-            id="email"
-            label="Email"
-            type="email"
-            error={!!errors.email}
-            helperText={errors.email?.message}
-            disabled={isSubmitting}
-            autoComplete="email"
-            autoFocus
-            required
-            sx={{ mb: 3 }}
-            aria-label="Email address"
-          />
-        )}
+      <TextField
+        {...register('email')}
+        fullWidth
+        id="email"
+        label="Email"
+        type="email"
+        error={!!errors.email}
+        helperText={errors.email?.message}
+        disabled={isSubmitting}
+        autoComplete="email"
+        autoFocus
+        required
+        sx={{ mb: 3 }}
+        aria-label="Email address"
       />
 
       <Button

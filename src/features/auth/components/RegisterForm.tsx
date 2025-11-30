@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useForm, Controller } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import {
   Box,
@@ -26,7 +26,7 @@ function RegisterForm({ onSubmit }: RegisterFormProps) {
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
   const {
-    control,
+    register,
     handleSubmit,
     watch,
     reset,
@@ -74,81 +74,63 @@ function RegisterForm({ onSubmit }: RegisterFormProps) {
         </Alert>
       )}
 
-      <Controller
-        name="email"
-        control={control}
-        render={({ field }) => (
-          <TextField
-            {...field}
-            fullWidth
-            id="email"
-            label="Email"
-            type="email"
-            error={!!errors.email}
-            helperText={errors.email?.message}
-            disabled={isSubmitting}
-            autoComplete="email"
-            autoFocus
-            required
-            sx={{ mb: 2 }}
-            aria-label="Email address"
-          />
-        )}
+      <TextField
+        {...register('email')}
+        fullWidth
+        id="email"
+        label="Email"
+        type="email"
+        error={!!errors.email}
+        helperText={errors.email?.message}
+        disabled={isSubmitting}
+        autoComplete="email"
+        autoFocus
+        required
+        sx={{ mb: 2 }}
+        aria-label="Email address"
       />
 
-      <Controller
-        name="username"
-        control={control}
-        render={({ field }) => (
-          <TextField
-            {...field}
-            fullWidth
-            id="username"
-            label="Username"
-            error={!!errors.username}
-            helperText={errors.username?.message || '3-30 characters, letters, numbers, _ and - only'}
-            disabled={isSubmitting}
-            autoComplete="username"
-            required
-            sx={{ mb: 2 }}
-            aria-label="Username"
-          />
-        )}
+      <TextField
+        {...register('username')}
+        fullWidth
+        id="username"
+        label="Username"
+        error={!!errors.username}
+        helperText={errors.username?.message || '3-30 characters, letters, numbers, _ and - only'}
+        disabled={isSubmitting}
+        autoComplete="username"
+        required
+        sx={{ mb: 2 }}
+        aria-label="Username"
       />
 
-      <Controller
-        name="password"
-        control={control}
-        render={({ field }) => (
-          <TextField
-            {...field}
-            fullWidth
-            id="password"
-            label="Password"
-            type={showPassword ? 'text' : 'password'}
-            error={!!errors.password}
-            helperText={errors.password?.message}
-            disabled={isSubmitting}
-            autoComplete="new-password"
-            required
-            sx={{ mb: 1 }}
-            aria-label="Password"
-            InputProps={{
-              endAdornment: (
-                <InputAdornment position="end">
-                  <IconButton
-                    aria-label={showPassword ? 'Hide password' : 'Show password'}
-                    onClick={() => setShowPassword(!showPassword)}
-                    edge="end"
-                    disabled={isSubmitting}
-                  >
-                    {showPassword ? <VisibilityOff /> : <Visibility />}
-                  </IconButton>
-                </InputAdornment>
-              ),
-            }}
-          />
-        )}
+      <TextField
+        {...register('password')}
+        fullWidth
+        id="password"
+        label="Password"
+        type={showPassword ? 'text' : 'password'}
+        error={!!errors.password}
+        helperText={errors.password?.message}
+        disabled={isSubmitting}
+        autoComplete="new-password"
+        required
+        sx={{ mb: 1 }}
+        aria-label="Password"
+        InputProps={{
+          endAdornment: (
+            <InputAdornment position="end">
+              <IconButton
+                aria-label={showPassword ? 'Hide password' : 'Show password'}
+                onClick={() => setShowPassword(!showPassword)}
+                edge="end"
+                disabled={isSubmitting}
+              >
+                {showPassword ? <VisibilityOff /> : <Visibility />}
+              </IconButton>
+            </InputAdornment>
+          ),
+        }}
       />
 
       <PasswordStrengthIndicator password={password} />
@@ -157,39 +139,33 @@ function RegisterForm({ onSubmit }: RegisterFormProps) {
         Password must be at least 8 characters
       </Typography>
 
-      <Controller
-        name="confirmPassword"
-        control={control}
-        render={({ field }) => (
-          <TextField
-            {...field}
-            fullWidth
-            id="confirmPassword"
-            label="Confirm Password"
-            type={showConfirmPassword ? 'text' : 'password'}
-            error={!!errors.confirmPassword}
-            helperText={errors.confirmPassword?.message}
-            disabled={isSubmitting}
-            autoComplete="new-password"
-            required
-            sx={{ mb: 3 }}
-            aria-label="Confirm password"
-            InputProps={{
-              endAdornment: (
-                <InputAdornment position="end">
-                  <IconButton
-                    aria-label={showConfirmPassword ? 'Hide password' : 'Show password'}
-                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                    edge="end"
-                    disabled={isSubmitting}
-                  >
-                    {showConfirmPassword ? <VisibilityOff /> : <Visibility />}
-                  </IconButton>
-                </InputAdornment>
-              ),
-            }}
-          />
-        )}
+      <TextField
+        {...register('confirmPassword')}
+        fullWidth
+        id="confirmPassword"
+        label="Confirm Password"
+        type={showConfirmPassword ? 'text' : 'password'}
+        error={!!errors.confirmPassword}
+        helperText={errors.confirmPassword?.message}
+        disabled={isSubmitting}
+        autoComplete="new-password"
+        required
+        sx={{ mb: 3 }}
+        aria-label="Confirm password"
+        InputProps={{
+          endAdornment: (
+            <InputAdornment position="end">
+              <IconButton
+                aria-label={showConfirmPassword ? 'Hide password' : 'Show password'}
+                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                edge="end"
+                disabled={isSubmitting}
+              >
+                {showConfirmPassword ? <VisibilityOff /> : <Visibility />}
+              </IconButton>
+            </InputAdornment>
+          ),
+        }}
       />
 
       <Button

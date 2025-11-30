@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useForm, Controller, type SubmitHandler } from 'react-hook-form';
+import { useForm, type SubmitHandler } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import {
   Box,
@@ -28,7 +28,7 @@ function LoginForm({ onSubmit, defaultEmail = '' }: LoginFormProps) {
   const [submitError, setSubmitError] = useState<string | null>(null);
 
   const {
-    control,
+    register,
     handleSubmit,
     formState: { errors, isSubmitting },
   } = useForm<LoginFormData>({
@@ -58,80 +58,61 @@ function LoginForm({ onSubmit, defaultEmail = '' }: LoginFormProps) {
         </Alert>
       )}
 
-      <Controller
-        name="email"
-        control={control}
-        render={({ field }) => (
-          <TextField
-            {...field}
-            fullWidth
-            id="email"
-            label="Email"
-            type="email"
-            error={!!errors.email}
-            helperText={errors.email?.message}
-            disabled={isSubmitting}
-            autoComplete="email"
-            autoFocus
-            required
-            sx={{ mb: 2 }}
-            aria-label="Email address"
-          />
-        )}
+      <TextField
+        {...register('email')}
+        fullWidth
+        id="email"
+        label="Email"
+        type="email"
+        error={!!errors.email}
+        helperText={errors.email?.message}
+        disabled={isSubmitting}
+        autoComplete="email"
+        autoFocus
+        required
+        sx={{ mb: 2 }}
+        aria-label="Email address"
       />
 
-      <Controller
-        name="password"
-        control={control}
-        render={({ field }) => (
-          <TextField
-            {...field}
-            fullWidth
-            id="password"
-            label="Password"
-            type={showPassword ? 'text' : 'password'}
-            error={!!errors.password}
-            helperText={errors.password?.message}
-            disabled={isSubmitting}
-            autoComplete="current-password"
-            required
-            sx={{ mb: 2 }}
-            aria-label="Password"
-            InputProps={{
-              endAdornment: (
-                <InputAdornment position="end">
-                  <IconButton
-                    aria-label={showPassword ? 'Hide password' : 'Show password'}
-                    onClick={() => setShowPassword(!showPassword)}
-                    edge="end"
-                    disabled={isSubmitting}
-                  >
-                    {showPassword ? <VisibilityOff /> : <Visibility />}
-                  </IconButton>
-                </InputAdornment>
-              ),
-            }}
-          />
-        )}
-      />
-
-      <Controller
-        name="rememberMe"
-        control={control}
-        render={({ field }) => (
-          <FormControlLabel
-            control={
-              <Checkbox
-                {...field}
-                checked={field.value || false}
-                id="rememberMe"
+      <TextField
+        {...register('password')}
+        fullWidth
+        id="password"
+        label="Password"
+        type={showPassword ? 'text' : 'password'}
+        error={!!errors.password}
+        helperText={errors.password?.message}
+        disabled={isSubmitting}
+        autoComplete="current-password"
+        required
+        sx={{ mb: 2 }}
+        aria-label="Password"
+        InputProps={{
+          endAdornment: (
+            <InputAdornment position="end">
+              <IconButton
+                aria-label={showPassword ? 'Hide password' : 'Show password'}
+                onClick={() => setShowPassword(!showPassword)}
+                edge="end"
                 disabled={isSubmitting}
-              />
-            }
-            label="Remember me for 30 days"
-            sx={{ mb: 2 }}
+              >
+                {showPassword ? <VisibilityOff /> : <Visibility />}
+              </IconButton>
+            </InputAdornment>
+          ),
+        }}
+      />
+
+      <FormControlLabel
+        control={
+          <Checkbox
+            {...register('rememberMe')}
+            id="rememberMe"
+            disabled={isSubmitting}
           />
-        )}
+        }
+        label="Remember me for 30 days"
+        sx={{ mb: 2 }}
       />
 
       <Button

@@ -1,6 +1,7 @@
-import { Box, Container, Typography, Paper } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 import { Link as RouterLink } from 'react-router-dom';
 import RegisterForm from '../components/RegisterForm';
+import AuthPageLayout from '../components/AuthPageLayout';
 import type { RegisterFormData } from '../schemas/auth.schemas';
 
 function RegisterPage() {
@@ -12,32 +13,26 @@ function RegisterPage() {
   };
 
   return (
-    <Container maxWidth="sm" sx={{ mt: 8, mb: 4 }}>
-      <Paper elevation={3} sx={{ p: 4 }}>
-        <Typography variant="h4" component="h1" gutterBottom align="center">
-          Sign Up
-        </Typography>
+    <AuthPageLayout title="Sign Up">
+      <RegisterForm onSubmit={handleSubmit} />
 
-        <RegisterForm onSubmit={handleSubmit} />
-
-        <Box sx={{ mt: 3, textAlign: 'center' }}>
-          <Typography variant="body2">
-            Already have an account?{' '}
-            <Typography
-              component={RouterLink}
-              to="/login"
-              sx={{
-                color: 'primary.main',
-                textDecoration: 'none',
-                '&:hover': { textDecoration: 'underline' },
-              }}
-            >
-              Login
-            </Typography>
+      <Box sx={{ mt: 3, textAlign: 'center' }}>
+        <Typography variant="body2">
+          Already have an account?{' '}
+          <Typography
+            component={RouterLink}
+            to="/login"
+            sx={{
+              color: 'primary.main',
+              textDecoration: 'none',
+              '&:hover': { textDecoration: 'underline' },
+            }}
+          >
+            Login
           </Typography>
-        </Box>
-      </Paper>
-    </Container>
+        </Typography>
+      </Box>
+    </AuthPageLayout>
   );
 }
 

@@ -1,8 +1,9 @@
 import { useState } from 'react';
-import { Container, Paper, Typography, Box, Alert } from '@mui/material';
+import { Typography, Box, Alert, Container, Paper } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import UpdatePasswordForm from '../components/UpdatePasswordForm';
+import AuthPageLayout from '../components/AuthPageLayout';
 import type { UpdatePasswordFormData } from '../schemas/auth.schemas';
 
 function UpdatePasswordPage() {
@@ -25,7 +26,16 @@ function UpdatePasswordPage() {
 
   if (isSuccess) {
     return (
-      <Container maxWidth="sm" sx={{ mt: 8, mb: 4 }}>
+      <Container
+        maxWidth="sm"
+        sx={{
+          minHeight: '100vh',
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'center',
+          py: 4,
+        }}
+      >
         <Paper elevation={3} sx={{ p: 4, textAlign: 'center' }}>
           <CheckCircleIcon sx={{ fontSize: 64, color: 'success.main', mb: 2 }} />
           <Typography variant="h4" component="h1" gutterBottom>
@@ -41,21 +51,15 @@ function UpdatePasswordPage() {
   }
 
   return (
-    <Container maxWidth="sm" sx={{ mt: 8, mb: 4 }}>
-      <Paper elevation={3} sx={{ p: 4 }}>
-        <Typography variant="h4" component="h1" gutterBottom align="center">
-          Set New Password
-        </Typography>
+    <AuthPageLayout title="Set New Password">
+      <Box sx={{ mb: 3 }}>
+        <Alert severity="info">
+          Enter your new password below. Make sure it's at least 8 characters long.
+        </Alert>
+      </Box>
 
-        <Box sx={{ mb: 3 }}>
-          <Alert severity="info">
-            Enter your new password below. Make sure it's at least 8 characters long.
-          </Alert>
-        </Box>
-
-        <UpdatePasswordForm onSubmit={handleSubmit} />
-      </Paper>
-    </Container>
+      <UpdatePasswordForm onSubmit={handleSubmit} />
+    </AuthPageLayout>
   );
 }
 
