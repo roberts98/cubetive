@@ -17,7 +17,7 @@ function Footer({
     { label: 'Privacy Policy', href: '/privacy' },
     { label: 'Terms of Service', href: '/terms' },
   ],
-  copyrightText = '© 2025 Cubetive. All rights reserved.'
+  copyrightText = '© 2025 Cubetive. All rights reserved.',
 }: FooterProps) {
   return (
     <Box

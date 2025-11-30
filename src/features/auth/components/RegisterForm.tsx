@@ -49,9 +49,7 @@ function RegisterForm({ onSubmit }: RegisterFormProps) {
 
     try {
       await onSubmit(data);
-      setSuccessMessage(
-        'Registration successful! Please check your email to verify your account.'
-      );
+      setSuccessMessage('Registration successful! Please check your email to verify your account.');
       reset();
     } catch (error) {
       setSubmitError(

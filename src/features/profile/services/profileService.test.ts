@@ -81,7 +81,11 @@ describe('profileService', () => {
     });
 
     it('should throw authentication error when auth.getUser fails', async () => {
-      const mockAuthError = { message: 'Invalid token', name: 'AuthError', status: 401 } as AuthError;
+      const mockAuthError = {
+        message: 'Invalid token',
+        name: 'AuthError',
+        status: 401,
+      } as AuthError;
 
       vi.mocked(supabase.auth.getUser).mockResolvedValue({
         data: { user: null },

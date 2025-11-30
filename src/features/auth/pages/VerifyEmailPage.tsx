@@ -1,38 +1,45 @@
 import { useState, useEffect } from 'react';
 import { Container, Paper, Typography, Box, CircularProgress, Button, Alert } from '@mui/material';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import ErrorIcon from '@mui/icons-material/Error';
+import { supabase } from '../../../db/supabase';
 
 type VerificationState = 'loading' | 'success' | 'error';
 
 function VerifyEmailPage() {
   const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
   const [verificationState, setVerificationState] = useState<VerificationState>('loading');
 
   useEffect(() => {
     const verifyEmail = async () => {
-      // Extract token from URL
-      const token = searchParams.get('token');
-
-      if (!token) {
-        setVerificationState('error');
-        return;
-      }
-
       try {
-        // This will be implemented with Supabase in the next step
-        console.log('Verifying email with token:', token);
-        // Placeholder - simulate API call
-        await new Promise((resolve) => setTimeout(resolve, 1500));
+        // Supabase automatically handles the verification token from the URL hash
+        // When the user clicks the verification link, Supabase processes it and creates a session
+        // We just need to check if we now have a session
+        const {
+          data: { session },
+          error,
+        } = await supabase.auth.getSession();
 
-        setVerificationState('success');
+        if (error) {
+          console.error('Session check error:', error);
+          setVerificationState('error');
+          return;
+        }
 
-        // Auto-redirect to login after 3 seconds
-        setTimeout(() => {
-          navigate('/login');
-        }, 3000);
+        if (session) {
+          // Email verified successfully - session exists
+          setVerificationState('success');
+
+          // Auto-redirect to login after 3 seconds
+          setTimeout(() => {
+            navigate('/login');
+          }, 3000);
+        } else {
+          // No session found - verification might have failed
+          setVerificationState('error');
+        }
       } catch (error) {
         console.error('Email verification failed:', error);
         setVerificationState('error');
@@ -40,12 +47,12 @@ function VerifyEmailPage() {
     };
 
     verifyEmail();
-  }, [searchParams, navigate]);
+  }, [navigate]);
 
   const handleResendVerification = async () => {
-    // This will be implemented with Supabase in the next step
-    console.log('Resending verification email');
-    // Placeholder
+    // For resending, user needs to provide their email
+    // For MVP, just redirect to login where they can request resend
+    navigate('/login');
   };
 
   if (verificationState === 'loading') {

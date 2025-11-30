@@ -26,7 +26,10 @@ import type { ProfileDTO } from '../../../types';
  */
 export async function getCurrentUserProfile(): Promise<ProfileDTO> {
   // Step 1: Get authenticated user from Supabase Auth
-  const { data: { user }, error: authError } = await supabase.auth.getUser();
+  const {
+    data: { user },
+    error: authError,
+  } = await supabase.auth.getUser();
 
   if (authError) {
     throw new Error(`Authentication error: ${authError.message}`);
@@ -40,7 +43,9 @@ export async function getCurrentUserProfile(): Promise<ProfileDTO> {
   // Select all fields except deleted_at (as per ProfileDTO type)
   const { data, error } = await supabase
     .from('profiles')
-    .select('id, username, profile_visibility, total_solves, pb_single, pb_single_date, pb_single_scramble, pb_ao5, pb_ao5_date, pb_ao12, pb_ao12_date, created_at, updated_at')
+    .select(
+      'id, username, profile_visibility, total_solves, pb_single, pb_single_date, pb_single_scramble, pb_ao5, pb_ao5_date, pb_ao12, pb_ao12_date, created_at, updated_at'
+    )
     .eq('id', user.id)
     .is('deleted_at', null)
     .single();
@@ -60,4 +65,79 @@ export async function getCurrentUserProfile(): Promise<ProfileDTO> {
   }
 
   return data as ProfileDTO;
+}
+
+/**
+ * Checks if a username is available for registration.
+ *
+ * This function queries the profiles table to see if a username is already taken.
+ * Used during registration to prevent duplicate usernames.
+ *
+ * @param {string} username - The username to check
+ * @returns {Promise<boolean>} true if username is available, false if taken
+ *
+ * @example
+ * const available = await checkUsernameAvailability('speedcuber123');
+ * if (!available) {
+ *   console.error('Username is already taken');
+ * }
+ */
+export async function checkUsernameAvailability(username: string): Promise<boolean> {
+  const { data, error } = await supabase
+    .from('profiles')
+    .select('username')
+    .eq('username', username)
+    .is('deleted_at', null)
+    .maybeSingle();
+
+  // If error occurred (other than no rows), consider username unavailable for safety
+  if (error && error.code !== 'PGRST116') {
+    console.error('Error checking username availability:', error);
+    return false;
+  }
+
+  // If data exists, username is taken
+  if (data) {
+    return false;
+  }
+
+  // No data found, username is available
+  return true;
+}
+
+/**
+ * Updates the username for a given user.
+ *
+ * First checks if the new username is available, then updates the profile.
+ * This is used in profile settings when a user wants to change their username.
+ *
+ * @param {string} userId - The user's ID (from auth.users)
+ * @param {string} newUsername - The new username to set
+ * @returns {Promise<void>}
+ * @throws {Error} 'Username is already taken' if username exists
+ * @throws {Error} Database errors from Supabase
+ *
+ * @example
+ * try {
+ *   await updateUsername(user.id, 'new_username');
+ * } catch (error) {
+ *   console.error('Failed to update username:', error);
+ * }
+ */
+export async function updateUsername(userId: string, newUsername: string): Promise<void> {
+  // Check if username is available
+  const isAvailable = await checkUsernameAvailability(newUsername);
+  if (!isAvailable) {
+    throw new Error('Username is already taken');
+  }
+
+  // Update the username
+  const { error } = await supabase
+    .from('profiles')
+    .update({ username: newUsername })
+    .eq('id', userId);
+
+  if (error) {
+    throw error;
+  }
 }

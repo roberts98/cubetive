@@ -1,21 +1,21 @@
-import type { Database } from "./db/database.types";
+import type { Database } from './db/database.types';
 
 // =============================================================================
 // Base Entity Types (derived from database)
 // =============================================================================
 
 /** Profile row type from database */
-type ProfileRow = Database["public"]["Tables"]["profiles"]["Row"];
+type ProfileRow = Database['public']['Tables']['profiles']['Row'];
 
 /** Solve row type from database */
-type SolveRow = Database["public"]["Tables"]["solves"]["Row"];
+type SolveRow = Database['public']['Tables']['solves']['Row'];
 
 // =============================================================================
 // Penalty Type
 // =============================================================================
 
 /** Valid penalty types for solves: null (no penalty), +2, or DNF */
-export type PenaltyType = null | "+2" | "DNF";
+export type PenaltyType = null | '+2' | 'DNF';
 
 // =============================================================================
 // Profile DTOs
@@ -25,7 +25,7 @@ export type PenaltyType = null | "+2" | "DNF";
  * Full profile DTO returned for authenticated user's own profile
  * GET /rest/v1/profiles?id=eq.{user_id}
  */
-export type ProfileDTO = Omit<ProfileRow, "deleted_at">;
+export type ProfileDTO = Omit<ProfileRow, 'deleted_at'>;
 
 /**
  * Public profile DTO with limited fields for unauthenticated access
@@ -33,7 +33,7 @@ export type ProfileDTO = Omit<ProfileRow, "deleted_at">;
  */
 export type PublicProfileDTO = Pick<
   ProfileRow,
-  "username" | "pb_single" | "pb_ao5" | "pb_ao12" | "total_solves" | "created_at"
+  'username' | 'pb_single' | 'pb_ao5' | 'pb_ao12' | 'total_solves' | 'created_at'
 >;
 
 // =============================================================================
@@ -44,10 +44,7 @@ export type PublicProfileDTO = Pick<
  * Command model for updating profile settings (username, visibility)
  * PATCH /rest/v1/profiles?id=eq.{user_id}
  */
-export type UpdateProfileCommand = Pick<
-  ProfileRow,
-  "username" | "profile_visibility"
->;
+export type UpdateProfileCommand = Pick<ProfileRow, 'username' | 'profile_visibility'>;
 
 /**
  * Command model for updating profile statistics after a new PB
@@ -56,14 +53,14 @@ export type UpdateProfileCommand = Pick<
 export type UpdateProfileStatsCommand = Partial<
   Pick<
     ProfileRow,
-    | "pb_single"
-    | "pb_single_date"
-    | "pb_single_scramble"
-    | "pb_ao5"
-    | "pb_ao5_date"
-    | "pb_ao12"
-    | "pb_ao12_date"
-    | "total_solves"
+    | 'pb_single'
+    | 'pb_single_date'
+    | 'pb_single_scramble'
+    | 'pb_ao5'
+    | 'pb_ao5_date'
+    | 'pb_ao12'
+    | 'pb_ao12_date'
+    | 'total_solves'
   >
 >;
 
@@ -71,7 +68,7 @@ export type UpdateProfileStatsCommand = Partial<
  * Command model for soft deleting a profile
  * PATCH /rest/v1/profiles?id=eq.{user_id}
  */
-export type DeleteProfileCommand = Pick<ProfileRow, "deleted_at">;
+export type DeleteProfileCommand = Pick<ProfileRow, 'deleted_at'>;
 
 // =============================================================================
 // Solve DTOs
@@ -81,7 +78,7 @@ export type DeleteProfileCommand = Pick<ProfileRow, "deleted_at">;
  * Full solve DTO returned for authenticated user's own solves
  * GET /rest/v1/solves?user_id=eq.{user_id}
  */
-export type SolveDTO = Omit<SolveRow, "deleted_at"> & {
+export type SolveDTO = Omit<SolveRow, 'deleted_at'> & {
   penalty_type: PenaltyType;
 };
 
@@ -89,7 +86,7 @@ export type SolveDTO = Omit<SolveRow, "deleted_at"> & {
  * Public solve DTO with limited fields for public profile views
  * GET /rest/v1/solves (for public profiles, last 10 solves)
  */
-export type PublicSolveDTO = Pick<SolveRow, "time_ms" | "created_at"> & {
+export type PublicSolveDTO = Pick<SolveRow, 'time_ms' | 'created_at'> & {
   penalty_type: PenaltyType;
 };
 
@@ -102,9 +99,9 @@ export type PublicSolveDTO = Pick<SolveRow, "time_ms" | "created_at"> & {
  * POST /rest/v1/solves
  */
 export type CreateSolveCommand = {
-  user_id: SolveRow["user_id"];
-  time_ms: SolveRow["time_ms"];
-  scramble: SolveRow["scramble"];
+  user_id: SolveRow['user_id'];
+  time_ms: SolveRow['time_ms'];
+  scramble: SolveRow['scramble'];
   penalty_type: PenaltyType;
 };
 
@@ -120,13 +117,13 @@ export type UpdateSolvePenaltyCommand = {
  * Command model for soft deleting a solve
  * PATCH /rest/v1/solves?id=eq.{solve_id}
  */
-export type DeleteSolveCommand = Pick<SolveRow, "deleted_at">;
+export type DeleteSolveCommand = Pick<SolveRow, 'deleted_at'>;
 
 /**
  * Command model for bulk soft deleting solves
  * PATCH /rest/v1/solves?id=in.({ids})
  */
-export type BulkDeleteSolvesCommand = Pick<SolveRow, "deleted_at">;
+export type BulkDeleteSolvesCommand = Pick<SolveRow, 'deleted_at'>;
 
 // =============================================================================
 // Pagination Types
@@ -143,7 +140,7 @@ export type PaginationParams = {
 /**
  * Sort order for solve list queries
  */
-export type SolveSortOrder = "created_at.desc" | "created_at.asc";
+export type SolveSortOrder = 'created_at.desc' | 'created_at.asc';
 
 /**
  * Query parameters for listing solves

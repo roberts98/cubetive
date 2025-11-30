@@ -1,4 +1,7 @@
-import type { PasswordStrengthResult, PasswordStrength } from '../../features/auth/types/auth.types';
+import type {
+  PasswordStrengthResult,
+  PasswordStrength,
+} from '../../features/auth/types/auth.types';
 
 export const validatePassword = (password: string): boolean => {
   return password.length >= 8;
@@ -18,8 +21,7 @@ export const calculatePasswordStrength = (password: string): PasswordStrengthRes
   if (!/\d/.test(password)) feedback.push('Add numbers');
   if (!/[^a-zA-Z0-9]/.test(password)) feedback.push('Add special characters');
 
-  const strength: PasswordStrength =
-    score < 40 ? 'weak' : score < 70 ? 'medium' : 'strong';
+  const strength: PasswordStrength = score < 40 ? 'weak' : score < 70 ? 'medium' : 'strong';
 
   return { strength, score, feedback };
 };

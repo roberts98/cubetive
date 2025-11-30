@@ -3,13 +3,14 @@ import { Link as RouterLink } from 'react-router-dom';
 import ResetPasswordRequestForm from '../components/ResetPasswordRequestForm';
 import AuthPageLayout from '../components/AuthPageLayout';
 import type { ResetPasswordRequestFormData } from '../schemas/auth.schemas';
+import { useAuthStore } from '../stores/authStore';
 
 function ResetPasswordPage() {
+  const resetPassword = useAuthStore((state) => state.resetPassword);
+
   const handleSubmit = async (data: ResetPasswordRequestFormData) => {
-    // This will be implemented with Supabase in the next step
-    console.log('Reset password request:', data);
-    // Placeholder - simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+    await resetPassword(data.email);
+    // Success message is shown by the ResetPasswordRequestForm component
   };
 
   return (

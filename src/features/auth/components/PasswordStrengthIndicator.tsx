@@ -7,10 +7,7 @@ interface PasswordStrengthIndicatorProps {
   onStrengthChange?: (result: PasswordStrengthResult) => void;
 }
 
-function PasswordStrengthIndicator({
-  password,
-  onStrengthChange,
-}: PasswordStrengthIndicatorProps) {
+function PasswordStrengthIndicator({ password, onStrengthChange }: PasswordStrengthIndicatorProps) {
   const result = calculatePasswordStrength(password);
 
   // Call callback when strength changes

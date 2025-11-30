@@ -46,7 +46,9 @@ function LoginForm({ onSubmit, defaultEmail = '' }: LoginFormProps) {
     try {
       await onSubmit(data);
     } catch (error) {
-      setSubmitError(error instanceof Error ? error.message : 'An error occurred. Please try again.');
+      setSubmitError(
+        error instanceof Error ? error.message : 'An error occurred. Please try again.'
+      );
     }
   };
 
@@ -104,13 +106,7 @@ function LoginForm({ onSubmit, defaultEmail = '' }: LoginFormProps) {
       />
 
       <FormControlLabel
-        control={
-          <Checkbox
-            {...register('rememberMe')}
-            id="rememberMe"
-            disabled={isSubmitting}
-          />
-        }
+        control={<Checkbox {...register('rememberMe')} id="rememberMe" disabled={isSubmitting} />}
         label="Remember me for 30 days"
         sx={{ mb: 2 }}
       />

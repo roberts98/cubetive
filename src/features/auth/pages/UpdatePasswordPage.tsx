@@ -5,16 +5,15 @@ import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import UpdatePasswordForm from '../components/UpdatePasswordForm';
 import AuthPageLayout from '../components/AuthPageLayout';
 import type { UpdatePasswordFormData } from '../schemas/auth.schemas';
+import { useAuthStore } from '../stores/authStore';
 
 function UpdatePasswordPage() {
   const navigate = useNavigate();
   const [isSuccess, setIsSuccess] = useState(false);
+  const updatePassword = useAuthStore((state) => state.updatePassword);
 
   const handleSubmit = async (data: UpdatePasswordFormData) => {
-    // This will be implemented with Supabase in the next step
-    console.log('Update password:', data);
-    // Placeholder - simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+    await updatePassword(data.password);
 
     setIsSuccess(true);
 

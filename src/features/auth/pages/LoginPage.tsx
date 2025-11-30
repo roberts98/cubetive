@@ -1,15 +1,29 @@
 import { Box, Typography } from '@mui/material';
-import { Link as RouterLink } from 'react-router-dom';
+import { Link as RouterLink, useNavigate, useLocation } from 'react-router-dom';
+import { useEffect } from 'react';
 import LoginForm from '../components/LoginForm';
 import AuthPageLayout from '../components/AuthPageLayout';
 import type { LoginFormData } from '../schemas/auth.schemas';
+import { useAuthStore } from '../stores/authStore';
 
 function LoginPage() {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const signIn = useAuthStore((state) => state.signIn);
+  const user = useAuthStore((state) => state.user);
+
+  // Redirect to dashboard if already logged in
+  useEffect(() => {
+    if (user) {
+      const from =
+        (location.state as { from?: { pathname: string } })?.from?.pathname || '/dashboard';
+      navigate(from, { replace: true });
+    }
+  }, [user, navigate, location]);
+
   const handleSubmit = async (data: LoginFormData) => {
-    // This will be implemented with Supabase in the next step
-    console.log('Login attempt:', data);
-    // Placeholder - simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+    await signIn(data.email, data.password);
+    // Navigation will happen via the useEffect above when user state updates
   };
 
   return (

@@ -19,9 +19,7 @@ function FeatureCard({ icon, title, description }: FeatureCardProps) {
       }}
     >
       <CardContent>
-        <Box sx={{ display: 'flex', justifyContent: 'center', mb: 2 }}>
-          {icon}
-        </Box>
+        <Box sx={{ display: 'flex', justifyContent: 'center', mb: 2 }}>{icon}</Box>
         <Typography variant="h5" component="h3" gutterBottom sx={{ fontWeight: 600 }}>
           {title}
         </Typography>

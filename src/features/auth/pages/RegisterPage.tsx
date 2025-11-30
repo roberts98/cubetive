@@ -1,15 +1,27 @@
 import { Box, Typography } from '@mui/material';
-import { Link as RouterLink } from 'react-router-dom';
+import { Link as RouterLink, useNavigate } from 'react-router-dom';
+import { useEffect } from 'react';
 import RegisterForm from '../components/RegisterForm';
 import AuthPageLayout from '../components/AuthPageLayout';
 import type { RegisterFormData } from '../schemas/auth.schemas';
+import { useAuthStore } from '../stores/authStore';
 
 function RegisterPage() {
+  const navigate = useNavigate();
+  const signUp = useAuthStore((state) => state.signUp);
+  const user = useAuthStore((state) => state.user);
+
+  // Redirect to dashboard if already logged in
+  useEffect(() => {
+    if (user) {
+      navigate('/dashboard', { replace: true });
+    }
+  }, [user, navigate]);
+
   const handleSubmit = async (data: RegisterFormData) => {
-    // This will be implemented with Supabase in the next step
-    console.log('Registration attempt:', data);
-    // Placeholder - simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+    await signUp(data.email, data.password, data.username);
+    // Success message is shown by the RegisterForm component
+    // User will need to verify email before they can log in
   };
 
   return (
