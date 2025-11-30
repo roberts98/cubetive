@@ -3,10 +3,6 @@ import type {
   PasswordStrength,
 } from '../../features/auth/types/auth.types';
 
-export const validatePassword = (password: string): boolean => {
-  return password.length >= 8;
-};
-
 export const calculatePasswordStrength = (password: string): PasswordStrengthResult => {
   let score = 0;
   const feedback: string[] = [];
