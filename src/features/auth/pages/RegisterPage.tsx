@@ -20,8 +20,8 @@ function RegisterPage() {
 
   const handleSubmit = async (data: RegisterFormData) => {
     await signUp(data.email, data.password, data.username);
-    // Success message is shown by the RegisterForm component
-    // User will need to verify email before they can log in
+    // Navigate to verification page, passing the email
+    navigate('/verify-email', { state: { email: data.email } });
   };
 
   return (

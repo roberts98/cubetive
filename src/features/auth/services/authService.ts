@@ -52,6 +52,13 @@ export class AuthService {
       throw new Error(this.mapError(error.message));
     }
 
+    // Enforce email confirmation (Supabase local dev doesn't enforce by default)
+    if (data.user && !data.user.confirmed_at) {
+      // Sign out the unconfirmed user
+      await supabase.auth.signOut();
+      throw new Error('Email not confirmed');
+    }
+
     return {
       user: data.user,
       session: data.session,
@@ -154,6 +161,26 @@ export class AuthService {
     const { data, error } = await supabase.auth.verifyOtp({
       token_hash: tokenHash,
       type,
+    });
+
+    if (error) {
+      throw new Error(this.mapError(error.message));
+    }
+
+    return {
+      user: data.user,
+      session: data.session,
+    };
+  }
+
+  /**
+   * Verify email with 6-digit code
+   */
+  static async verifyEmailWithCode(email: string, code: string): Promise<AuthResponse> {
+    const { data, error } = await supabase.auth.verifyOtp({
+      email,
+      token: code,
+      type: 'email',
     });
 
     if (error) {

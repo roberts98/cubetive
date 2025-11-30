@@ -63,3 +63,15 @@ export const updatePasswordSchema = z
   });
 
 export type UpdatePasswordFormData = z.infer<typeof updatePasswordSchema>;
+
+// Email verification code schema (6-digit code)
+export const verifyEmailCodeSchema = z.object({
+  code: z
+    .string()
+    .min(1, 'Verification code is required')
+    .length(6, 'Verification code must be 6 digits')
+    .regex(/^\d{6}$/, 'Verification code must contain only numbers'),
+  email: emailSchema,
+});
+
+export type VerifyEmailCodeFormData = z.infer<typeof verifyEmailCodeSchema>;
