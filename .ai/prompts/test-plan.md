@@ -1,0 +1,41 @@
+You are an experienced QA engineer tasked with creating a comprehensive test plan for a software development project. Analyze the project information below:
+
+<project_code>
+All files in the repository
+</project_code>
+
+<technology_stack> @.ai/tech-stack.md </technology_stack>
+
+Your task is to generate a detailed test plan that is tailored to the specifics of the project, taking into account the technologies used, the code structure, and the key repository elements. The test plan must be written in English.
+
+Before creating the test plan, conduct an in-depth project analysis within the <project_analysis> block in your thought block. The analysis should include:
+
+1. Key project components resulting from code analysis:
+
+List and describe the main components of the project 2. Specifics of the technology stack and its impact on the testing strategy:
+
+Analyze each element of the technology stack and its implications for testing 3. Test priorities based on the repository structure:
+
+Identify and rank test areas by importance 4. Potential risk areas requiring special attention in testing:
+
+List potential risks and justify why they require special attention
+
+After completing the analysis, create the test plan within the <test_plan> block. The plan should include:
+
+1. Introduction and testing objectives 2. Scope of testing 3. Types of tests to be performed (e.g., unit, integration, performance tests) 4. Test scenarios for key functionalities 5. Test environment 6. Testing tools 7. Test schedule 8. Test acceptance criteria 9. Roles and responsibilities in the testing process 10. Bug reporting procedures
+
+Remember that the test plan must be:
+
+Accurately tailored to the project context
+
+Take into account the specifics of the technologies used
+
+Prioritize key repository elements
+
+Be written in English
+
+Demonstrate high quality and professionalism
+
+Start with the analysis, and then proceed to create the test plan. Your final output should consist only of the test plan and should not duplicate or summarize any work done in the project analysis block.
+
+Present this plan in Markdown format.

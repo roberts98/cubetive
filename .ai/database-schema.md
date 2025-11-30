@@ -7,6 +7,7 @@ This document describes the simplified PostgreSQL database schema for Cubetive. 
 ## Design Philosophy
 
 **Leverage Supabase, keep it simple:**
+
 - Use Supabase's `auth.users` for authentication
 - Only create a `profiles` table for additional user data
 - Keep all business logic in the application
@@ -17,6 +18,7 @@ This document describes the simplified PostgreSQL database schema for Cubetive. 
 ### Authentication (Handled by Supabase)
 
 The `auth.users` table is managed by Supabase and includes:
+
 - User ID (UUID)
 - Email
 - Password (hashed)
@@ -30,6 +32,7 @@ The `auth.users` table is managed by Supabase and includes:
 Extends `auth.users` with application-specific data.
 
 **Columns:**
+
 - `id` (UUID, PK): References auth.users(id)
 - `username` (TEXT, UNIQUE): Custom username for profile URLs
 - `profile_visibility` (BOOLEAN): Whether profile is public
@@ -46,6 +49,7 @@ Extends `auth.users` with application-specific data.
 - `deleted_at` (TIMESTAMPTZ): Soft delete timestamp
 
 **Constraints:**
+
 - Username: 3-30 characters, alphanumeric with underscores and hyphens
 - Username must match pattern: `^[a-zA-Z0-9_-]+$`
 
@@ -54,6 +58,7 @@ Extends `auth.users` with application-specific data.
 Stores individual solve records.
 
 **Columns:**
+
 - `id` (UUID, PK): Unique solve identifier
 - `user_id` (UUID, FK): References auth.users(id) directly
 - `time_ms` (INTEGER): Raw solve time in milliseconds
@@ -63,6 +68,7 @@ Stores individual solve records.
 - `deleted_at` (TIMESTAMPTZ): Soft delete timestamp
 
 **Constraints:**
+
 - Time must be positive
 - Scramble cannot be empty
 - Penalty type must be '+2', 'DNF', or NULL
@@ -123,19 +129,23 @@ The application handles ALL business logic:
 ## Usage Examples
 
 ### Getting user profile with email from auth
+
 ```javascript
 // In your application using Supabase client
 const { data } = await supabase
   .from('profiles')
-  .select(`
+  .select(
+    `
     *,
     auth.users!inner(email)
-  `)
+  `
+  )
   .eq('username', 'speedcuber123')
   .single();
 ```
 
 ### Getting recent solves
+
 ```sql
 SELECT * FROM solves
 WHERE user_id = 'user-uuid'
@@ -145,6 +155,7 @@ LIMIT 10;
 ```
 
 ### Getting public profile
+
 ```sql
 SELECT username, pb_single, pb_ao5, pb_ao12, total_solves
 FROM profiles
@@ -154,12 +165,14 @@ WHERE username = 'speedcuber123'
 ```
 
 ### Inserting a new solve
+
 ```sql
 INSERT INTO solves (user_id, time_ms, scramble, penalty_type)
 VALUES ('user-uuid', 12500, 'R U R'' U'' R'' F R2 U'' R'' U'' R U R'' F''', NULL);
 ```
 
 ### Updating profile statistics
+
 ```sql
 UPDATE profiles
 SET
@@ -174,6 +187,7 @@ WHERE id = 'user-uuid';
 ## Setup Instructions
 
 1. **Run the migration:**
+
    ```bash
    supabase migration up
    ```
