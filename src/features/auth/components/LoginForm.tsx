@@ -1,20 +1,14 @@
-import { useState } from 'react';
 import { useForm, type SubmitHandler } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import {
-  Box,
-  TextField,
-  Button,
-  Checkbox,
-  FormControlLabel,
-  Alert,
-  CircularProgress,
-  IconButton,
-  InputAdornment,
-} from '@mui/material';
-import { Visibility, VisibilityOff } from '@mui/icons-material';
+import { Box, Checkbox, FormControlLabel } from '@mui/material';
 import { loginSchema } from '../schemas/auth.schemas';
 import type { z } from 'zod';
+import { usePasswordToggle } from '../hooks/usePasswordToggle';
+import { useFormSubmit } from '../hooks/useFormSubmit';
+import FormTextField from './FormTextField';
+import FormAlert from './FormAlert';
+import SubmitButton from './SubmitButton';
+import { AUTH_CONSTANTS } from '../constants/auth.constants';
 
 type LoginFormData = z.infer<typeof loginSchema>;
 
@@ -24,8 +18,8 @@ interface LoginFormProps {
 }
 
 function LoginForm({ onSubmit, defaultEmail = '' }: LoginFormProps) {
-  const [showPassword, setShowPassword] = useState(false);
-  const [submitError, setSubmitError] = useState<string | null>(null);
+  const { submitError, handleFormSubmit } = useFormSubmit();
+  const { showPassword, InputProps: passwordInputProps } = usePasswordToggle();
 
   const {
     register,
@@ -40,94 +34,47 @@ function LoginForm({ onSubmit, defaultEmail = '' }: LoginFormProps) {
     },
   });
 
-  const onFormSubmit: SubmitHandler<LoginFormData> = async (data) => {
-    setSubmitError(null);
-
-    try {
-      await onSubmit(data);
-    } catch (error) {
-      setSubmitError(
-        error instanceof Error ? error.message : 'An error occurred. Please try again.'
-      );
-    }
-  };
+  const onFormSubmit: SubmitHandler<LoginFormData> = handleFormSubmit(async (data) => {
+    await onSubmit(data);
+  });
 
   return (
     <Box component="form" onSubmit={handleSubmit(onFormSubmit)} noValidate>
-      {submitError && (
-        <Alert severity="error" sx={{ mb: 2 }} role="alert">
-          {submitError}
-        </Alert>
-      )}
+      <FormAlert severity="error" message={submitError} />
 
-      <TextField
+      <FormTextField
         {...register('email')}
-        fullWidth
         id="email"
         label="Email"
         type="email"
-        error={!!errors.email}
-        helperText={errors.email?.message}
-        disabled={isSubmitting}
+        error={errors.email}
+        isSubmitting={isSubmitting}
         autoComplete="email"
         autoFocus
-        required
-        sx={{ mb: 2 }}
         aria-label="Email address"
       />
 
-      <TextField
+      <FormTextField
         {...register('password')}
-        fullWidth
         id="password"
         label="Password"
         type={showPassword ? 'text' : 'password'}
-        error={!!errors.password}
-        helperText={errors.password?.message}
-        disabled={isSubmitting}
+        error={errors.password}
+        isSubmitting={isSubmitting}
         autoComplete="current-password"
-        required
-        sx={{ mb: 2 }}
         aria-label="Password"
-        InputProps={{
-          endAdornment: (
-            <InputAdornment position="end">
-              <IconButton
-                aria-label={showPassword ? 'Hide password' : 'Show password'}
-                onClick={() => setShowPassword(!showPassword)}
-                edge="end"
-                disabled={isSubmitting}
-              >
-                {showPassword ? <VisibilityOff /> : <Visibility />}
-              </IconButton>
-            </InputAdornment>
-          ),
-        }}
+        InputProps={passwordInputProps}
       />
 
       <FormControlLabel
         control={<Checkbox {...register('rememberMe')} id="rememberMe" disabled={isSubmitting} />}
-        label="Remember me for 30 days"
-        sx={{ mb: 2 }}
+        label={`Remember me for ${AUTH_CONSTANTS.REMEMBER_ME_DURATION_DAYS} days`}
+        sx={{ mb: AUTH_CONSTANTS.FORM_FIELD_MARGIN_BOTTOM }}
       />
 
-      <Button
-        type="submit"
-        fullWidth
-        variant="contained"
-        size="large"
-        disabled={isSubmitting}
-        sx={{ mb: 2 }}
-      >
-        {isSubmitting ? (
-          <>
-            <CircularProgress size={20} sx={{ mr: 1 }} />
-            Logging in...
-          </>
-        ) : (
-          'Login'
-        )}
-      </Button>
+      <SubmitButton isSubmitting={isSubmitting} loadingText="Logging in...">
+        Login
+      </SubmitButton>
     </Box>
   );
 }

@@ -1,19 +1,22 @@
-import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Box, TextField, Button, Alert, CircularProgress, Typography } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 import {
   resetPasswordRequestSchema,
   type ResetPasswordRequestFormData,
 } from '../schemas/auth.schemas';
+import { useFormSubmit } from '../hooks/useFormSubmit';
+import FormTextField from './FormTextField';
+import FormAlert from './FormAlert';
+import SubmitButton from './SubmitButton';
+import { AUTH_CONSTANTS } from '../constants/auth.constants';
 
 interface ResetPasswordRequestFormProps {
   onSubmit: (data: ResetPasswordRequestFormData) => Promise<void>;
 }
 
 function ResetPasswordRequestForm({ onSubmit }: ResetPasswordRequestFormProps) {
-  const [submitError, setSubmitError] = useState<string | null>(null);
-  const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const { submitError, successMessage, handleFormSubmit } = useFormSubmit();
 
   const {
     register,
@@ -27,75 +30,42 @@ function ResetPasswordRequestForm({ onSubmit }: ResetPasswordRequestFormProps) {
     },
   });
 
-  const onFormSubmit = async (data: ResetPasswordRequestFormData) => {
-    setSubmitError(null);
-    setSuccessMessage(null);
-
-    try {
-      await onSubmit(data);
-      setSuccessMessage(
-        'If an account exists with this email, you will receive password reset instructions. Please check your inbox.'
-      );
-      reset();
-    } catch (error) {
-      setSubmitError(
-        error instanceof Error ? error.message : 'An error occurred. Please try again.'
-      );
-    }
-  };
+  const onFormSubmit = handleFormSubmit<ResetPasswordRequestFormData>(async (data) => {
+    await onSubmit(data);
+    reset();
+    return 'If an account exists with this email, you will receive password reset instructions. Please check your inbox.';
+  });
 
   return (
     <Box component="form" onSubmit={handleSubmit(onFormSubmit)} noValidate>
-      <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
+      <Typography
+        variant="body2"
+        color="text.secondary"
+        sx={{ mb: AUTH_CONSTANTS.FORM_SECTION_MARGIN_BOTTOM }}
+      >
         Enter your email address and we'll send you instructions to reset your password. The reset
         link will expire after 1 hour.
       </Typography>
 
-      {submitError && (
-        <Alert severity="error" sx={{ mb: 2 }} role="alert">
-          {submitError}
-        </Alert>
-      )}
+      <FormAlert severity="error" message={submitError} />
+      <FormAlert severity="success" message={successMessage} />
 
-      {successMessage && (
-        <Alert severity="success" sx={{ mb: 2 }} role="alert">
-          {successMessage}
-        </Alert>
-      )}
-
-      <TextField
+      <FormTextField
         {...register('email')}
-        fullWidth
         id="email"
         label="Email"
         type="email"
-        error={!!errors.email}
-        helperText={errors.email?.message}
-        disabled={isSubmitting}
+        error={errors.email}
+        isSubmitting={isSubmitting}
         autoComplete="email"
         autoFocus
-        required
-        sx={{ mb: 3 }}
         aria-label="Email address"
+        sx={{ mb: AUTH_CONSTANTS.FORM_SECTION_MARGIN_BOTTOM }}
       />
 
-      <Button
-        type="submit"
-        fullWidth
-        variant="contained"
-        size="large"
-        disabled={isSubmitting}
-        sx={{ mb: 2 }}
-      >
-        {isSubmitting ? (
-          <>
-            <CircularProgress size={20} sx={{ mr: 1 }} />
-            Sending...
-          </>
-        ) : (
-          'Send Reset Instructions'
-        )}
-      </Button>
+      <SubmitButton isSubmitting={isSubmitting} loadingText="Sending...">
+        Send Reset Instructions
+      </SubmitButton>
     </Box>
   );
 }

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 /**
  * State for async operations
@@ -76,7 +76,7 @@ export function useAsync<T>(
     error: null,
   });
 
-  const execute = useCallback(async () => {
+  const execute = async () => {
     setState((prev) => ({ ...prev, loading: true, error: null }));
 
     try {
@@ -86,11 +86,11 @@ export function useAsync<T>(
       const error = err instanceof Error ? err : new Error('An unknown error occurred');
       setState({ data: null, loading: false, error });
     }
-  }, [asyncFunction]);
+  };
 
-  const reset = useCallback(() => {
+  const reset = () => {
     setState({ data: null, loading: false, error: null });
-  }, []);
+  };
 
   useEffect(() => {
     if (immediate) {

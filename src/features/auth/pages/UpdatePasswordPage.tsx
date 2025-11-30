@@ -1,11 +1,12 @@
 import { useState } from 'react';
-import { Typography, Box, Alert, Container, Paper } from '@mui/material';
+import { Box, Alert } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import UpdatePasswordForm from '../components/UpdatePasswordForm';
 import AuthPageLayout from '../components/AuthPageLayout';
+import SuccessScreen from '../components/SuccessScreen';
 import type { UpdatePasswordFormData } from '../schemas/auth.schemas';
 import { useAuthStore } from '../stores/authStore';
+import { AUTH_CONSTANTS } from '../constants/auth.constants';
 
 function UpdatePasswordPage() {
   const navigate = useNavigate();
@@ -17,43 +18,27 @@ function UpdatePasswordPage() {
 
     setIsSuccess(true);
 
-    // Auto-redirect to login after 3 seconds
+    // Auto-redirect to login after configured timeout
     setTimeout(() => {
       navigate('/login');
-    }, 3000);
+    }, AUTH_CONSTANTS.SUCCESS_REDIRECT_TIMEOUT);
   };
 
   if (isSuccess) {
     return (
-      <Container
-        maxWidth="sm"
-        sx={{
-          minHeight: '100vh',
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'center',
-          py: 4,
-        }}
-      >
-        <Paper elevation={3} sx={{ p: 4, textAlign: 'center' }}>
-          <CheckCircleIcon sx={{ fontSize: 64, color: 'success.main', mb: 2 }} />
-          <Typography variant="h4" component="h1" gutterBottom>
-            Password Updated Successfully
-          </Typography>
-          <Typography variant="body1" color="text.secondary" sx={{ mt: 2 }}>
-            Your password has been changed. You will be redirected to the login page in a few
-            seconds.
-          </Typography>
-        </Paper>
-      </Container>
+      <SuccessScreen
+        title="Password Updated Successfully"
+        message="Your password has been changed. You will be redirected to the login page in a few seconds."
+      />
     );
   }
 
   return (
     <AuthPageLayout title="Set New Password">
-      <Box sx={{ mb: 3 }}>
+      <Box sx={{ mb: AUTH_CONSTANTS.FORM_SECTION_MARGIN_BOTTOM }}>
         <Alert severity="info">
-          Enter your new password below. Make sure it's at least 8 characters long.
+          Enter your new password below. Make sure it's at least{' '}
+          {AUTH_CONSTANTS.PASSWORD_MIN_LENGTH} characters long.
         </Alert>
       </Box>
 

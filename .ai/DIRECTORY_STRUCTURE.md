@@ -53,6 +53,7 @@ src/
 ## Feature Structure Pattern
 
 Each feature follows this pattern:
+
 - `components/` - UI components specific to this feature
 - `hooks/` - React hooks specific to this feature
 - `pages/` - Page-level components (route targets)
@@ -62,6 +63,7 @@ Each feature follows this pattern:
 ## Import Paths
 
 Features use relative imports for siblings and absolute paths for cross-cutting concerns:
+
 - `../components/Foo` - Import from sibling in same feature
 - `../../../shared/hooks/useAsync` - Import shared utilities
 - `../../../db/supabase` - Import database client
@@ -70,6 +72,7 @@ Features use relative imports for siblings and absolute paths for cross-cutting 
 ## Future Features (Planned)
 
 Based on `.ai/ui-architecture-plan.md`, these features will be added:
+
 - `features/timer/` - Timer, scramble, penalty controls
 - `features/history/` - Solve history and filtering
 - `features/analytics/` - Charts and statistics

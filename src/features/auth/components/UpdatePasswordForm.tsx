@@ -1,33 +1,29 @@
-import { useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { useForm, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import {
-  Box,
-  TextField,
-  Button,
-  Alert,
-  CircularProgress,
-  IconButton,
-  InputAdornment,
-  Typography,
-} from '@mui/material';
-import { Visibility, VisibilityOff } from '@mui/icons-material';
+import { Box, Typography } from '@mui/material';
 import { updatePasswordSchema, type UpdatePasswordFormData } from '../schemas/auth.schemas';
 import PasswordStrengthIndicator from './PasswordStrengthIndicator';
+import { usePasswordToggle } from '../hooks/usePasswordToggle';
+import { useFormSubmit } from '../hooks/useFormSubmit';
+import FormTextField from './FormTextField';
+import FormAlert from './FormAlert';
+import SubmitButton from './SubmitButton';
+import { AUTH_CONSTANTS } from '../constants/auth.constants';
 
 interface UpdatePasswordFormProps {
   onSubmit: (data: UpdatePasswordFormData) => Promise<void>;
 }
 
 function UpdatePasswordForm({ onSubmit }: UpdatePasswordFormProps) {
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [submitError, setSubmitError] = useState<string | null>(null);
+  const { submitError, handleFormSubmit } = useFormSubmit();
+  const { showPassword, InputProps: passwordInputProps } = usePasswordToggle();
+  const { showPassword: showConfirmPassword, InputProps: confirmPasswordInputProps } =
+    usePasswordToggle();
 
   const {
     register,
     handleSubmit,
-    watch,
+    control,
     formState: { errors, isSubmitting },
   } = useForm<UpdatePasswordFormData>({
     resolver: zodResolver(updatePasswordSchema),
@@ -37,110 +33,52 @@ function UpdatePasswordForm({ onSubmit }: UpdatePasswordFormProps) {
     },
   });
 
-  const password = watch('password');
+  const password = useWatch({ control, name: 'password' });
 
-  const onFormSubmit = async (data: UpdatePasswordFormData) => {
-    setSubmitError(null);
-
-    try {
-      await onSubmit(data);
-    } catch (error) {
-      setSubmitError(
-        error instanceof Error ? error.message : 'An error occurred. Please try again.'
-      );
-    }
-  };
+  const onFormSubmit = handleFormSubmit<UpdatePasswordFormData>(async (data) => {
+    await onSubmit(data);
+  });
 
   return (
     <Box component="form" onSubmit={handleSubmit(onFormSubmit)} noValidate>
-      {submitError && (
-        <Alert severity="error" sx={{ mb: 2 }} role="alert">
-          {submitError}
-        </Alert>
-      )}
+      <FormAlert severity="error" message={submitError} />
 
-      <TextField
+      <FormTextField
         {...register('password')}
-        fullWidth
         id="password"
         label="New Password"
         type={showPassword ? 'text' : 'password'}
-        error={!!errors.password}
-        helperText={errors.password?.message}
-        disabled={isSubmitting}
+        error={errors.password}
+        isSubmitting={isSubmitting}
         autoComplete="new-password"
         autoFocus
-        required
-        sx={{ mb: 1 }}
         aria-label="New password"
-        InputProps={{
-          endAdornment: (
-            <InputAdornment position="end">
-              <IconButton
-                aria-label={showPassword ? 'Hide password' : 'Show password'}
-                onClick={() => setShowPassword(!showPassword)}
-                edge="end"
-                disabled={isSubmitting}
-              >
-                {showPassword ? <VisibilityOff /> : <Visibility />}
-              </IconButton>
-            </InputAdornment>
-          ),
-        }}
+        InputProps={passwordInputProps}
+        sx={{ mb: 1 }}
       />
 
       <PasswordStrengthIndicator password={password} />
 
       <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mt: 1, mb: 2 }}>
-        Password must be at least 8 characters
+        Password must be at least {AUTH_CONSTANTS.PASSWORD_MIN_LENGTH} characters
       </Typography>
 
-      <TextField
+      <FormTextField
         {...register('confirmPassword')}
-        fullWidth
         id="confirmPassword"
         label="Confirm New Password"
         type={showConfirmPassword ? 'text' : 'password'}
-        error={!!errors.confirmPassword}
-        helperText={errors.confirmPassword?.message}
-        disabled={isSubmitting}
+        error={errors.confirmPassword}
+        isSubmitting={isSubmitting}
         autoComplete="new-password"
-        required
-        sx={{ mb: 3 }}
         aria-label="Confirm new password"
-        InputProps={{
-          endAdornment: (
-            <InputAdornment position="end">
-              <IconButton
-                aria-label={showConfirmPassword ? 'Hide password' : 'Show password'}
-                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                edge="end"
-                disabled={isSubmitting}
-              >
-                {showConfirmPassword ? <VisibilityOff /> : <Visibility />}
-              </IconButton>
-            </InputAdornment>
-          ),
-        }}
+        InputProps={confirmPasswordInputProps}
+        sx={{ mb: AUTH_CONSTANTS.FORM_SECTION_MARGIN_BOTTOM }}
       />
 
-      <Button
-        type="submit"
-        fullWidth
-        variant="contained"
-        size="large"
-        disabled={isSubmitting}
-        sx={{ mb: 2 }}
-      >
-        {isSubmitting ? (
-          <>
-            <CircularProgress size={20} sx={{ mr: 1 }} />
-            Updating password...
-          </>
-        ) : (
-          'Update Password'
-        )}
-      </Button>
+      <SubmitButton isSubmitting={isSubmitting} loadingText="Updating password...">
+        Update Password
+      </SubmitButton>
     </Box>
   );
 }

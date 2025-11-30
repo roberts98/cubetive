@@ -1,6 +1,7 @@
 # Authentication UI Implementation Summary
 
 ## Overview
+
 This document summarizes the implementation of authentication UI components for Cubetive, following the specifications in `.ai/auth-spec.md`. All forms use **react-hook-form** with **Zod validation** for robust form management and type-safe validation.
 
 ## Tech Stack
@@ -16,6 +17,7 @@ This document summarizes the implementation of authentication UI components for 
 ### 1. Validation Schemas (`src/features/auth/schemas/`)
 
 #### auth.schemas.ts
+
 Centralized Zod schemas for all authentication forms:
 
 - **loginSchema**: Email, password, rememberMe (boolean)
@@ -24,6 +26,7 @@ Centralized Zod schemas for all authentication forms:
 - **updatePasswordSchema**: Password, confirmPassword with password matching validation
 
 **Key Features**:
+
 - Email validation with regex pattern
 - Password minimum 8 characters requirement
 - Username validation (3-30 chars, alphanumeric + underscore/hyphen)
@@ -33,6 +36,7 @@ Centralized Zod schemas for all authentication forms:
 ### 2. Form Components (`src/features/auth/components/`)
 
 #### LoginForm
+
 - **File**: `LoginForm.tsx`
 - **Schema**: `loginSchema`
 - **Features**:
@@ -45,18 +49,20 @@ Centralized Zod schemas for all authentication forms:
   - Accessible with ARIA labels
 
 #### RegisterForm
+
 - **File**: `RegisterForm.tsx`
 - **Schema**: `registerSchema`
 - **Features**:
   - Four controlled fields (email, username, password, confirmPassword)
   - Real-time password strength indicator using `watch('password')`
   - Password matching validation via Zod schema
-  - Username format validation (alphanumeric + _ and -)
+  - Username format validation (alphanumeric + \_ and -)
   - Form reset after successful submission using `reset()`
   - Success message display
   - Minimal re-renders thanks to react-hook-form
 
 #### ResetPasswordRequestForm
+
 - **File**: `ResetPasswordRequestForm.tsx`
 - **Schema**: `resetPasswordRequestSchema`
 - **Features**:
@@ -66,6 +72,7 @@ Centralized Zod schemas for all authentication forms:
   - Informational text about process
 
 #### UpdatePasswordForm
+
 - **File**: `UpdatePasswordForm.tsx`
 - **Schema**: `updatePasswordSchema`
 - **Features**:
@@ -76,6 +83,7 @@ Centralized Zod schemas for all authentication forms:
   - Zod schema validation for minimum requirements
 
 #### PasswordStrengthIndicator
+
 - **File**: `PasswordStrengthIndicator.tsx`
 - **Features**:
   - Visual progress bar (red → yellow → green)
@@ -108,17 +116,20 @@ The following routes are configured in `App.tsx`:
 ## Benefits of react-hook-form + Zod
 
 ### Performance
+
 - **Minimal re-renders**: Only the specific field that changed re-renders
 - **Uncontrolled inputs**: Better performance than controlled components
 - **Async validation**: Built-in debouncing and validation strategies
 
 ### Developer Experience
+
 - **Type safety**: Zod schema types automatically inferred
 - **Centralized validation**: All validation logic in schema files
 - **Less boilerplate**: No manual onChange/onBlur handlers
 - **Easy form state**: Automatic handling of errors, touched, dirty, etc.
 
 ### Validation Features
+
 - **Schema-based**: Validation rules defined once in Zod schemas
 - **Reusable**: Schemas can be reused for both frontend and backend
 - **Composable**: Password confirmation uses `.refine()` for cross-field validation
@@ -127,6 +138,7 @@ The following routes are configured in `App.tsx`:
 ## Key Implementation Patterns
 
 ### 1. Controller Pattern
+
 All form fields use the `Controller` component from react-hook-form:
 
 ```tsx
@@ -140,14 +152,16 @@ All form fields use the `Controller` component from react-hook-form:
 ```
 
 ### 2. Password Watching
+
 Password strength indicators use `watch` to observe password changes:
 
 ```tsx
 const password = watch('password');
-<PasswordStrengthIndicator password={password} />
+<PasswordStrengthIndicator password={password} />;
 ```
 
 ### 3. Submit Handler Pattern
+
 All forms use typed submit handlers:
 
 ```tsx
@@ -159,6 +173,7 @@ const onFormSubmit: SubmitHandler<LoginFormData> = async (data) => {
 ```
 
 ### 4. Form Reset
+
 Successful submissions reset the form using `reset()`:
 
 ```tsx
@@ -174,6 +189,7 @@ try {
 ## Styling Approach
 
 All components follow the existing Material UI v7 theme:
+
 - Dark mode with cyan primary color (#00bcd4)
 - Paper components with elevation={3}
 - Consistent spacing with Material UI's sx prop

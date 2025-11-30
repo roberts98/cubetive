@@ -138,6 +138,50 @@ git commit
 # 2. Prettier --write (format code)
 ```
 
+### React Compiler Guidelines
+
+This project uses **React Compiler** (babel-plugin-react-compiler) for automatic performance optimization. The compiler automatically memoizes components and hooks, eliminating the need for manual optimization.
+
+**DO NOT use manual memoization:**
+
+- ❌ **Never use `useMemo`** - React Compiler handles memoization automatically
+- ❌ **Never use `useCallback`** - React Compiler optimizes functions automatically
+- ❌ **Never use `React.memo`** - React Compiler optimizes components automatically
+
+**Why?**
+
+- React Compiler analyzes your code and applies optimizations automatically
+- Manual memoization adds complexity without benefit
+- In many cases, manual memoization can conflict with the compiler's optimizations
+
+**Examples:**
+
+```tsx
+// ❌ Bad: Manual memoization (unnecessary with React Compiler)
+const expensiveValue = useMemo(() => computeValue(a, b), [a, b]);
+const handleClick = useCallback(() => doSomething(), []);
+
+// ✅ Good: Let React Compiler handle it
+const expensiveValue = computeValue(a, b);
+const handleClick = () => doSomething();
+```
+
+**React Hook Form Integration:**
+
+- Use `useWatch()` instead of `watch()` for watching form values
+- `useWatch()` is a proper React hook that works with React Compiler
+- `watch()` returns a function that can't be safely memoized
+
+```tsx
+// ❌ Bad: watch() is incompatible with React Compiler
+const { watch } = useForm();
+const password = watch('password');
+
+// ✅ Good: useWatch() is React Compiler-friendly
+const { control } = useForm();
+const password = useWatch({ control, name: 'password' });
+```
+
 ### TypeScript Guidelines
 
 - **Strict mode enabled** (`tsconfig.json`)
@@ -515,6 +559,8 @@ npm run test:coverage # Run tests with coverage
 - Use RLS policies for authorization at database level
 - Keep services thin (just CRUD operations)
 - Put business logic in custom hooks
+- Use `useWatch()` instead of `watch()` in React Hook Form
+- Let React Compiler handle optimizations (no manual memoization)
 
 ### Don'ts ❌
 
@@ -527,6 +573,8 @@ npm run test:coverage # Run tests with coverage
 - Don't create unnecessary abstractions
 - Don't store server state in Zustand (use `useAsync`)
 - Don't bypass RLS policies by calling Supabase directly in components
+- **Don't use `useMemo`, `useCallback`, or `React.memo`** - React Compiler handles this
+- Don't use `watch()` from React Hook Form - use `useWatch()` instead
 
 ---
 

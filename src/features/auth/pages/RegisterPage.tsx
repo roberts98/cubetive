@@ -1,22 +1,18 @@
 import { Box, Typography } from '@mui/material';
-import { Link as RouterLink, useNavigate } from 'react-router-dom';
-import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import RegisterForm from '../components/RegisterForm';
 import AuthPageLayout from '../components/AuthPageLayout';
+import StyledLink from '../components/StyledLink';
 import type { RegisterFormData } from '../schemas/auth.schemas';
 import { useAuthStore } from '../stores/authStore';
+import { useAuthRedirect } from '../hooks/useAuthRedirect';
 
 function RegisterPage() {
   const navigate = useNavigate();
   const signUp = useAuthStore((state) => state.signUp);
-  const user = useAuthStore((state) => state.user);
 
-  // Redirect to dashboard if already logged in
-  useEffect(() => {
-    if (user) {
-      navigate('/dashboard', { replace: true });
-    }
-  }, [user, navigate]);
+  // Redirect to dashboard if already logged in (don't preserve return URL)
+  useAuthRedirect('/dashboard', false);
 
   const handleSubmit = async (data: RegisterFormData) => {
     await signUp(data.email, data.password, data.username);
@@ -30,18 +26,7 @@ function RegisterPage() {
 
       <Box sx={{ mt: 3, textAlign: 'center' }}>
         <Typography variant="body2">
-          Already have an account?{' '}
-          <Typography
-            component={RouterLink}
-            to="/login"
-            sx={{
-              color: 'primary.main',
-              textDecoration: 'none',
-              '&:hover': { textDecoration: 'underline' },
-            }}
-          >
-            Login
-          </Typography>
+          Already have an account? <StyledLink to="/login">Login</StyledLink>
         </Typography>
       </Box>
     </AuthPageLayout>

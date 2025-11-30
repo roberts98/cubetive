@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { Box, LinearProgress, Typography } from '@mui/material';
 import { calculatePasswordStrength } from '../../../utils/validators/password';
 import type { PasswordStrengthResult } from '../types/auth.types';
@@ -10,10 +11,12 @@ interface PasswordStrengthIndicatorProps {
 function PasswordStrengthIndicator({ password, onStrengthChange }: PasswordStrengthIndicatorProps) {
   const result = calculatePasswordStrength(password);
 
-  // Call callback when strength changes
-  if (onStrengthChange) {
-    onStrengthChange(result);
-  }
+  // Call callback when strength changes (using useEffect to avoid side effects during render)
+  useEffect(() => {
+    if (onStrengthChange) {
+      onStrengthChange(result);
+    }
+  }, [result, onStrengthChange]);
 
   const getColor = () => {
     switch (result.strength) {
