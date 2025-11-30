@@ -2,9 +2,6 @@
 -- PostgreSQL database schema for Rubik's Cube timing application
 -- Using Supabase with Row Level Security (RLS)
 
--- Enable necessary extensions
-CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
-
 -- =============================================
 -- PROFILES TABLE (extends auth.users for public data)
 -- =============================================
@@ -42,7 +39,7 @@ CREATE TABLE public.profiles (
 -- =============================================
 CREATE TABLE public.solves (
     -- Primary key
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
 
     -- Foreign key to auth.users (not profiles)
     user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
