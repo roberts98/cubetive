@@ -1,5 +1,4 @@
 import { Box, Typography } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
 import RegisterForm from '../components/RegisterForm';
 import AuthPageLayout from '../components/AuthPageLayout';
 import StyledLink from '../components/StyledLink';
@@ -8,7 +7,6 @@ import { useAuthStore } from '../stores/authStore';
 import { useAuthRedirect } from '../hooks/useAuthRedirect';
 
 function RegisterPage() {
-  const navigate = useNavigate();
   const signUp = useAuthStore((state) => state.signUp);
 
   // Redirect to dashboard if already logged in (don't preserve return URL)
@@ -16,12 +14,12 @@ function RegisterPage() {
 
   const handleSubmit = async (data: RegisterFormData) => {
     await signUp(data.email, data.password, data.username);
-    // Navigate to verification page, passing the email
-    navigate('/verify-email', { state: { email: data.email } });
+    // Success message is shown by the form
+    // User can manually navigate to login after seeing the success message
   };
 
   return (
-    <AuthPageLayout title="Sign Up">
+    <AuthPageLayout title="Create your account">
       <RegisterForm onSubmit={handleSubmit} />
 
       <Box sx={{ mt: 3, textAlign: 'center' }}>

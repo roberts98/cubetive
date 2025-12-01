@@ -14,7 +14,7 @@ function ResetPasswordPage() {
   };
 
   return (
-    <AuthPageLayout title="Reset Your Password">
+    <AuthPageLayout title="Reset your password">
       <ResetPasswordRequestForm onSubmit={handleSubmit} />
 
       <Box sx={{ mt: 3, textAlign: 'center' }}>

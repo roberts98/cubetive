@@ -183,9 +183,9 @@ VITE_SUPABASE_URL=https://lvtrctlpyqqrluszjxpb.supabase.co
 VITE_SUPABASE_ANON_KEY=eyJhbGci...
 VITE_SUPABASE_SERVICE_ROLE_KEY=eyJhbGci...  # ← Add this
 
-E2E_USERNAME_ID=2434b6f4-a34e-4f46-a250-80d74f493cb4
-E2E_USERNAME=rsidzinka+e2e@gmail.com
-E2E_PASSWORD=Robert10
+E2E_USERNAME_ID=8b8f9d2b-63d2-4761-aeaa-b15124d3012e
+E2E_USERNAME=rsidzinka@gmail.com
+E2E_PASSWORD=Password12!
 ```
 
 ⚠️ **Important**: Never commit this key to version control!

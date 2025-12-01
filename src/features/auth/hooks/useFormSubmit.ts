@@ -43,7 +43,7 @@ export function useFormSubmit() {
       } catch (error) {
         const errorMessage = error instanceof Error ? error.message : AUTH_ERROR_MESSAGES.DEFAULT;
         setSubmitError(errorMessage);
-        throw error; // Re-throw so form can handle it if needed
+        // Don't re-throw - let the form handle the error state
       }
     };
   };

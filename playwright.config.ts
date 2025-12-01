@@ -41,6 +41,7 @@ export default defineConfig({
     },
 
     // Main test project - uses authenticated session
+    // Excludes public tests (those run in chromium-public project)
     {
       name: 'chromium',
       use: {
@@ -48,6 +49,7 @@ export default defineConfig({
         // Load authenticated session from setup
         storageState: 'e2e/.auth/user.json',
       },
+      testIgnore: /.*\.public\.spec\.ts/,
       dependencies: ['setup'],
     },
 

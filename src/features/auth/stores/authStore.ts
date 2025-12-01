@@ -140,7 +140,11 @@ export const useAuthStore = create<AuthStore>((set) => ({
     try {
       set({ loading: true });
       await AuthService.logout();
+      // Clear the state immediately
       set({ user: null, session: null, loading: false });
+
+      // Force a small delay to ensure Supabase clears storage
+      await new Promise((resolve) => setTimeout(resolve, 100));
     } catch (error) {
       set({ loading: false });
       throw error;

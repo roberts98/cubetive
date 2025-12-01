@@ -27,3 +27,5 @@ dist-ssr
 .env.test
 
 coverage
+test-results
+playwright-report

@@ -1,5 +1,14 @@
-import { Container, Typography, AppBar, Toolbar, Button, Box, Paper } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
+import {
+  Container,
+  Typography,
+  AppBar,
+  Toolbar,
+  Button,
+  Box,
+  Paper,
+  Link as MuiLink,
+} from '@mui/material';
+import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../../auth/stores/authStore';
 
 /**
@@ -16,7 +25,7 @@ function DashboardPage() {
   const handleLogout = async () => {
     try {
       await signOut();
-      navigate('/');
+      navigate('/login');
     } catch (error) {
       console.error('Logout failed:', error);
     }
@@ -30,9 +39,15 @@ function DashboardPage() {
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
             Cubetive
           </Typography>
-          <Button color="inherit" onClick={() => navigate('/profile')}>
+          <MuiLink
+            component={RouterLink}
+            to="/profile"
+            color="inherit"
+            underline="none"
+            sx={{ mr: 2 }}
+          >
             Profile
-          </Button>
+          </MuiLink>
           <Button color="inherit" onClick={handleLogout}>
             Logout
           </Button>

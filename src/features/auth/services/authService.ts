@@ -67,9 +67,10 @@ export class AuthService {
 
   /**
    * Sign out the current user
+   * Scope 'local' ensures the session is removed from this device only
    */
   static async logout(): Promise<void> {
-    const { error } = await supabase.auth.signOut();
+    const { error } = await supabase.auth.signOut({ scope: 'local' });
 
     if (error) {
       throw new Error(this.mapError(error.message));

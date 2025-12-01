@@ -11,9 +11,10 @@ import {
   TextField,
   FormControlLabel,
   Switch,
+  Link as MuiLink,
 } from '@mui/material';
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../../auth/stores/authStore';
 
 interface TabPanelProps {
@@ -53,7 +54,7 @@ function ProfilePage() {
   const handleLogout = async () => {
     try {
       await signOut();
-      navigate('/');
+      navigate('/login');
     } catch (error) {
       console.error('Logout failed:', error);
     }
@@ -71,9 +72,15 @@ function ProfilePage() {
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
             Cubetive
           </Typography>
-          <Button color="inherit" onClick={() => navigate('/dashboard')}>
+          <MuiLink
+            component={RouterLink}
+            to="/dashboard"
+            color="inherit"
+            underline="none"
+            sx={{ mr: 2 }}
+          >
             Dashboard
-          </Button>
+          </MuiLink>
           <Button color="inherit" onClick={handleLogout}>
             Logout
           </Button>

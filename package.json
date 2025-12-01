@@ -15,6 +15,13 @@
     "test": "vitest",
     "test:ui": "vitest --ui",
     "test:coverage": "vitest --coverage",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
+    "test:e2e:debug": "playwright test --debug",
+    "test:e2e:report": "playwright show-report",
+    "test:e2e:headed": "playwright test --headed",
+    "test:e2e:setup": "playwright test --project=setup",
+    "test:e2e:public": "playwright test --project=chromium-public",
     "prepare": "husky"
   },
   "dependencies": {
@@ -33,6 +40,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.39.1",
+    "@playwright/test": "^1.57.0",
     "@testing-library/react": "^16.3.0",
     "@types/node": "^24.10.1",
     "@types/react": "^19.2.5",
