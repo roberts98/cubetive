@@ -49,7 +49,7 @@ export class DashboardPage extends BasePage {
    */
   async expectOnDashboard() {
     await expect(this.page).toHaveURL(this.url);
-    await expect(this.page.getByRole('heading', { name: /Welcome to Cubetive/i })).toBeVisible();
+    await expect(this.page.getByRole('heading', { name: /Performance Analytics/i })).toBeVisible();
   }
 
   /**

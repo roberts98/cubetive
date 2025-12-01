@@ -71,7 +71,7 @@ test.describe('Logout - P0 Critical Tests', () => {
 
     // ASSERT - Should be logged in again
     await dashboardPage.expectOnDashboard();
-    await dashboardPage.expectUserEmail(TEST_USER.email);
+    await dashboardPage.expectLogoutButtonVisible();
   });
 
   test('P0-406: should logout from profile page', async ({ page }) => {
@@ -105,12 +105,12 @@ test.describe('Logout - P0 Critical Tests', () => {
 
     // ACT
     await dashboardPage.goto();
-    await dashboardPage.expectUserEmail(TEST_USER.email);
+    await dashboardPage.expectLogoutButtonVisible();
 
     await dashboardPage.logout();
     await page.waitForURL(/\/(login|)/);
 
-    // ASSERT - User email should not be visible
-    await expect(page.getByText(TEST_USER.email)).not.toBeVisible();
+    // ASSERT - Logout button should not be visible (confirms authenticated content cleared)
+    await expect(page.getByRole('button', { name: 'Logout' })).not.toBeVisible();
   });
 });

@@ -1,4 +1,5 @@
 import { Box, Typography } from '@mui/material';
+import { useNavigate, useLocation } from 'react-router-dom';
 import LoginForm from '../components/LoginForm';
 import AuthPageLayout from '../components/AuthPageLayout';
 import StyledLink from '../components/StyledLink';
@@ -8,13 +9,19 @@ import { useAuthRedirect } from '../hooks/useAuthRedirect';
 
 function LoginPage() {
   const signIn = useAuthStore((state) => state.signIn);
+  const navigate = useNavigate();
+  const location = useLocation();
 
   // Redirect to dashboard if already logged in (preserve return URL)
   useAuthRedirect('/dashboard', true);
 
   const handleSubmit = async (data: LoginFormData) => {
     await signIn(data.email, data.password);
-    // Navigation will happen via the useAuthRedirect hook when user state updates
+
+    // Explicitly navigate after successful login
+    const from = (location.state as { from?: { pathname: string } })?.from?.pathname;
+    const destination = from || '/dashboard';
+    navigate(destination, { replace: true });
   };
 
   return (
