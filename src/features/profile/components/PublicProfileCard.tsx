@@ -49,7 +49,7 @@ export function PublicProfileCard({ profile }: PublicProfileCardProps) {
           { label: 'Personal Best Single', timeMs: profile.pb_single },
           { label: 'Best Average of 5', timeMs: profile.pb_ao5 },
           { label: 'Best Average of 12', timeMs: profile.pb_ao12 },
-          { label: 'Total Solves', timeMs: profile.total_solves },
+          { label: 'Total Solves', timeMs: profile.total_solves, isCount: true },
         ]}
       />
     </Paper>

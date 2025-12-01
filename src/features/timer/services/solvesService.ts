@@ -207,3 +207,34 @@ export async function getSolveCount(userId: string): Promise<number> {
 
   return count || 0;
 }
+
+/**
+ * Fetches all solves for a user.
+ *
+ * Used for recalculating statistics when solves are deleted.
+ * Returns solves in chronological order (oldest first).
+ * Limited to 10,000 solves per user by design.
+ *
+ * @param {string} userId - The user's ID
+ * @returns {Promise<SolveDTO[]>} Array of all solve records
+ * @throws {Error} Database errors from Supabase
+ *
+ * @example
+ * const allSolves = await getAllSolves(userId);
+ * const pb = findPersonalBest(allSolves);
+ */
+export async function getAllSolves(userId: string): Promise<SolveDTO[]> {
+  const { data, error } = await supabase
+    .from('solves')
+    .select('*')
+    .eq('user_id', userId)
+    .is('deleted_at', null)
+    .order('created_at', { ascending: true })
+    .limit(10000); // Max solves per user
+
+  if (error) {
+    throw error;
+  }
+
+  return (data as SolveDTO[]) || [];
+}

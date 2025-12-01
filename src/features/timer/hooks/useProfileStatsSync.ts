@@ -9,7 +9,7 @@
 import { useRef } from 'react';
 import { useAuthStore } from '../../auth/stores/authStore';
 import { useUpdateProfileStats } from '../../profile/hooks/useUpdateProfileStats';
-import { getRecentSolves } from '../services/solvesService';
+import { getAllSolves, getSolveCount } from '../services/solvesService';
 import { getCurrentUserProfile } from '../../profile/services/profileService';
 import {
   findPersonalBest,
@@ -51,13 +51,13 @@ export function useProfileStatsSync() {
   const syncingRef = useRef(false);
 
   /**
-   * Syncs profile statistics after a solve is saved
+   * Syncs profile statistics after a solve is saved or deleted
    *
    * This function:
-   * 1. Fetches recent 100 solves for stats calculation
+   * 1. Fetches all solves for accurate stats calculation
    * 2. Calculates current PB single, Ao5, and Ao12
    * 3. Compares with profile's stored stats
-   * 4. Updates profile if any improvements found
+   * 4. Updates profile to match current calculation (handles both improvements and deletions)
    * 5. Shows celebration notifications for new PBs
    */
   const syncAfterSolve = async (): Promise<void> => {
@@ -79,27 +79,23 @@ export function useProfileStatsSync() {
       // Step 1: Fetch current profile to get existing stats
       const profile = await getCurrentUserProfile();
 
-      // Step 2: Fetch recent 100 solves for stats calculation
-      const recentSolves = await getRecentSolves(user.id, 100);
+      // Step 2: Fetch total solve count (excluding deleted solves)
+      const totalSolves = await getSolveCount(user.id);
 
-      if (recentSolves.length === 0) {
-        console.log('No solves found, skipping stats sync');
-        syncingRef.current = false;
-        return;
-      }
+      // Step 3: Fetch all solves for accurate stats calculation
+      // Note: This includes all non-deleted solves up to 10,000 (max per user)
+      // Using getAllSolves ensures PB is accurate even after deletions
+      const allSolves = await getAllSolves(user.id);
 
-      // Step 3: Convert to chronological order (oldest → newest)
-      // getRecentSolves returns newest first, but stats functions expect oldest first
-      const chronologicalSolves = [...recentSolves].reverse();
+      // Step 4: Calculate new statistics from all solves
+      // allSolves is already in chronological order (oldest → newest)
+      const newPBSolve = allSolves.length > 0 ? findPersonalBest(allSolves) : null;
+      const newBestAo5 = allSolves.length > 0 ? findBestAo5(allSolves) : null;
+      const newBestAo12 = allSolves.length > 0 ? findBestAo12(allSolves) : null;
 
-      // Step 4: Calculate new statistics
-      const newPBSolve = findPersonalBest(chronologicalSolves);
-      const newBestAo5 = findBestAo5(chronologicalSolves);
-      const newBestAo12 = findBestAo12(chronologicalSolves);
-
-      // Step 5: Prepare stats update command (only update what changed)
+      // Step 5: Prepare stats update command
       const statsUpdate: UpdateProfileStatsCommand = {
-        total_solves: recentSolves.length,
+        total_solves: totalSolves,
       };
 
       // Track which records were broken
@@ -109,35 +105,57 @@ export function useProfileStatsSync() {
         newPBAo12: false,
       };
 
-      // Check and update PB single
+      // Update PB single (always update to match current calculation)
       if (newPBSolve) {
         const effectiveTime =
           newPBSolve.penalty_type === '+2' ? newPBSolve.time_ms + 2000 : newPBSolve.time_ms;
 
+        // Check if this is a new record (for celebration notification)
         if (isNewPersonalBest(effectiveTime, profile.pb_single)) {
-          statsUpdate.pb_single = effectiveTime;
-          statsUpdate.pb_single_date = newPBSolve.created_at;
-          statsUpdate.pb_single_scramble = newPBSolve.scramble;
           newRecords.newPBSingle = true;
         }
+
+        // Always update to match current calculation (handles both improvements and deletions)
+        statsUpdate.pb_single = effectiveTime;
+        statsUpdate.pb_single_date = newPBSolve.created_at;
+        statsUpdate.pb_single_scramble = newPBSolve.scramble;
+      } else {
+        // No valid solves, clear PB
+        statsUpdate.pb_single = null;
+        statsUpdate.pb_single_date = null;
+        statsUpdate.pb_single_scramble = null;
       }
 
-      // Check and update PB Ao5
+      // Update PB Ao5 (always update to match current calculation)
       if (newBestAo5) {
+        // Check if this is a new record (for celebration notification)
         if (!profile.pb_ao5 || newBestAo5.average < profile.pb_ao5) {
-          statsUpdate.pb_ao5 = newBestAo5.average;
-          statsUpdate.pb_ao5_date = newBestAo5.date;
           newRecords.newPBAo5 = true;
         }
+
+        // Always update to match current calculation (handles both improvements and deletions)
+        statsUpdate.pb_ao5 = newBestAo5.average;
+        statsUpdate.pb_ao5_date = newBestAo5.date;
+      } else {
+        // No valid Ao5, clear it
+        statsUpdate.pb_ao5 = null;
+        statsUpdate.pb_ao5_date = null;
       }
 
-      // Check and update PB Ao12
+      // Update PB Ao12 (always update to match current calculation)
       if (newBestAo12) {
+        // Check if this is a new record (for celebration notification)
         if (!profile.pb_ao12 || newBestAo12.average < profile.pb_ao12) {
-          statsUpdate.pb_ao12 = newBestAo12.average;
-          statsUpdate.pb_ao12_date = newBestAo12.date;
           newRecords.newPBAo12 = true;
         }
+
+        // Always update to match current calculation (handles both improvements and deletions)
+        statsUpdate.pb_ao12 = newBestAo12.average;
+        statsUpdate.pb_ao12_date = newBestAo12.date;
+      } else {
+        // No valid Ao12, clear it
+        statsUpdate.pb_ao12 = null;
+        statsUpdate.pb_ao12_date = null;
       }
 
       // Step 6: Update profile with new stats

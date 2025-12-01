@@ -13,6 +13,7 @@ import {
   deleteSolve,
   updateSolvePenalty,
   getSolveCount,
+  getAllSolves,
 } from './solvesService';
 import type { SolveDTO } from '../types/timer.types';
 
@@ -310,6 +311,82 @@ describe('solvesService', () => {
       const result = await getSolveCount(mockUserId);
 
       expect(result).toBe(0);
+    });
+  });
+
+  describe('getAllSolves', () => {
+    it('should fetch all solves in chronological order', async () => {
+      const mockSolves: SolveDTO[] = [
+        { ...mockSolve, id: 'solve-1', created_at: '2024-01-01T00:00:00Z' },
+        { ...mockSolve, id: 'solve-2', created_at: '2024-01-02T00:00:00Z' },
+        { ...mockSolve, id: 'solve-3', created_at: '2024-01-03T00:00:00Z' },
+      ];
+
+      const mockFrom = vi.fn().mockReturnValue({
+        select: vi.fn().mockReturnValue({
+          eq: vi.fn().mockReturnValue({
+            is: vi.fn().mockReturnValue({
+              order: vi.fn().mockReturnValue({
+                limit: vi.fn().mockResolvedValue({
+                  data: mockSolves,
+                  error: null,
+                }),
+              }),
+            }),
+          }),
+        }),
+      });
+
+      vi.mocked(supabase.from).mockImplementation(mockFrom as never);
+
+      const result = await getAllSolves(mockUserId);
+
+      expect(result).toEqual(mockSolves);
+      expect(supabase.from).toHaveBeenCalledWith('solves');
+    });
+
+    it('should return empty array if no solves', async () => {
+      const mockFrom = vi.fn().mockReturnValue({
+        select: vi.fn().mockReturnValue({
+          eq: vi.fn().mockReturnValue({
+            is: vi.fn().mockReturnValue({
+              order: vi.fn().mockReturnValue({
+                limit: vi.fn().mockResolvedValue({
+                  data: null,
+                  error: null,
+                }),
+              }),
+            }),
+          }),
+        }),
+      });
+
+      vi.mocked(supabase.from).mockImplementation(mockFrom as never);
+
+      const result = await getAllSolves(mockUserId);
+
+      expect(result).toEqual([]);
+    });
+
+    it('should throw error on database error', async () => {
+      const mockFrom = vi.fn().mockReturnValue({
+        select: vi.fn().mockReturnValue({
+          eq: vi.fn().mockReturnValue({
+            is: vi.fn().mockReturnValue({
+              order: vi.fn().mockReturnValue({
+                limit: vi.fn().mockResolvedValue({
+                  data: null,
+                  error: new Error('Database error'),
+                }),
+              }),
+            }),
+          }),
+        }),
+      });
+
+      vi.mocked(supabase.from).mockImplementation(mockFrom as never);
+
+      await expect(getAllSolves(mockUserId)).rejects.toThrow('Database error');
     });
   });
 });
