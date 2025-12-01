@@ -64,3 +64,12 @@ export interface TimerStateData {
   startTime: number | null;
   currentScramble: string;
 }
+
+/**
+ * Result of finding best average (Ao5, Ao12, etc.)
+ */
+export interface AverageResult {
+  average: number;
+  solves: SolveDTO[];
+  date: string;
+}
