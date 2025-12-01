@@ -33,8 +33,22 @@ export type ProfileDTO = Omit<ProfileRow, 'deleted_at'>;
  */
 export type PublicProfileDTO = Pick<
   ProfileRow,
-  'username' | 'pb_single' | 'pb_ao5' | 'pb_ao12' | 'total_solves' | 'created_at'
+  | 'username'
+  | 'profile_visibility'
+  | 'pb_single'
+  | 'pb_ao5'
+  | 'pb_ao12'
+  | 'total_solves'
+  | 'created_at'
 >;
+
+/**
+ * Public profile with recent solves for public profile page
+ * Combines profile data with limited solve history
+ */
+export type PublicProfileWithSolves = PublicProfileDTO & {
+  recent_solves: PublicSolveDTO[];
+};
 
 // =============================================================================
 // Profile Command Models

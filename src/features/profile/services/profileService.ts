@@ -1,5 +1,5 @@
 import { supabase } from '../../../db/supabase';
-import type { ProfileDTO } from '../../../types';
+import type { ProfileDTO, PublicProfileWithSolves, PublicSolveDTO } from '../../../types';
 
 /**
  * Fetches the authenticated user's complete profile data from Supabase.
@@ -169,4 +169,80 @@ export async function updateProfileVisibility(userId: string, isPublic: boolean)
   if (error) {
     throw error;
   }
+}
+
+/**
+ * Fetches a public profile by username.
+ *
+ * This function retrieves a user's public profile data along with their recent solves.
+ * No authentication is required to access public profiles.
+ * If the profile is private, the function still returns the profile but with profile_visibility=false,
+ * allowing the UI to display a "Profile is private" message.
+ *
+ * @param {string} username - The username to look up
+ * @returns {Promise<PublicProfileWithSolves | null>} The public profile with recent solves, or null if not found
+ * @throws {Error} Database errors from Supabase
+ *
+ * @example
+ * try {
+ *   const profile = await getPublicProfile('speedcuber123');
+ *   if (profile && profile.profile_visibility) {
+ *     console.log(`Best single: ${profile.pb_single}ms`);
+ *     console.log(`Recent solves: ${profile.recent_solves.length}`);
+ *   } else if (profile) {
+ *     console.log('Profile is private');
+ *   } else {
+ *     console.log('Profile not found');
+ *   }
+ * } catch (error) {
+ *   console.error('Failed to load public profile:', error);
+ * }
+ */
+export async function getPublicProfile(username: string): Promise<PublicProfileWithSolves | null> {
+  // Step 1: Query the profiles table for the username
+  const { data: profileData, error: profileError } = await supabase
+    .from('profiles')
+    .select(
+      'username, profile_visibility, pb_single, pb_ao5, pb_ao12, total_solves, created_at, id'
+    )
+    .eq('username', username)
+    .is('deleted_at', null)
+    .maybeSingle();
+
+  // Step 2: Handle profile query errors
+  if (profileError) {
+    throw profileError;
+  }
+
+  // Step 3: Return null if profile doesn't exist
+  if (!profileData) {
+    return null;
+  }
+
+  // Step 4: Fetch recent solves (last 10) if profile is public
+  let recentSolves: PublicSolveDTO[] = [];
+
+  if (profileData.profile_visibility) {
+    const { data: solvesData, error: solvesError } = await supabase
+      .from('solves')
+      .select('time_ms, penalty_type, created_at')
+      .eq('user_id', profileData.id)
+      .is('deleted_at', null)
+      .order('created_at', { ascending: false })
+      .limit(10);
+
+    if (solvesError) {
+      throw solvesError;
+    }
+
+    recentSolves = (solvesData as PublicSolveDTO[]) || [];
+  }
+
+  // Step 5: Return combined profile with recent solves
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { id: _id, ...publicProfile } = profileData;
+  return {
+    ...publicProfile,
+    recent_solves: recentSolves,
+  };
 }
