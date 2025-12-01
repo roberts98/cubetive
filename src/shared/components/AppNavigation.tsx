@@ -80,6 +80,7 @@ function AppNavigation({
     ? []
     : [
         { label: 'Dashboard', to: '/dashboard' },
+        { label: 'History', to: '/history' },
         { label: 'Profile', to: '/profile' },
       ];
 
