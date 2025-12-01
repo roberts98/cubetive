@@ -3,20 +3,25 @@
 ## 1. Product Overview
 
 ### Product Name
+
 Cubetive - Web Application for Rubik's Cube Skills Improvement (MVP)
 
 ### Product Description
+
 Cubetive is a web-based application designed to help speedcubing enthusiasts of all skill levels track, analyze, and improve their Rubik's cube solving abilities. The platform provides a professional-grade timer with standardized controls, comprehensive performance statistics, and social sharing capabilities to create an engaging community experience.
 
 ### Target Audience
+
 - Primary: Rubik's cube enthusiasts ranging from absolute beginners to advanced competitive speedcubers
 - Secondary: Casual puzzle solvers interested in tracking their improvement
 - Tertiary: Speedcubing communities looking for a platform to share achievements
 
 ### Product Vision
+
 To become the go-to platform for Rubik's cube enthusiasts to track their progress, improve their solving skills, and connect with the speedcubing community through data-driven insights and social features.
 
 ### MVP Scope
+
 The initial release focuses on delivering core timing functionality, essential statistics, and basic social features for 3x3 cube solving only, with planned expansion to support additional cube types and advanced features in future releases.
 
 ## 2. User Problem
@@ -24,23 +29,29 @@ The initial release focuses on delivering core timing functionality, essential s
 ### Primary Problems
 
 #### Lack of Persistent Progress Tracking
+
 Speedcubers struggle to maintain a comprehensive record of their solving history across different practice sessions and devices. Many existing solutions either don't save data permanently or require manual tracking, making it difficult to analyze long-term improvement trends.
 
 #### Limited Social Validation and Sharing
+
 Current tools often lack integrated social features, forcing users to manually screenshot and share their achievements on external platforms. This creates friction in the natural desire to celebrate milestones and compare progress with peers.
 
 #### Fragmented User Experience
+
 Existing solutions often require users to juggle multiple tools: one for timing, another for scramble generation, and separate platforms for statistics and social interaction. This fragmentation disrupts practice flow and reduces engagement.
 
 ### Secondary Problems
 
 #### Inconsistent Timing Standards
+
 Many casual timing apps don't follow World Cube Association (WCA) standards for controls and penalties, making it difficult for users transitioning to competitive solving.
 
 #### Limited Statistical Analysis
+
 Basic timing apps often show only recent times without providing meaningful metrics like running averages (Ao5, Ao12, Ao100) that are standard in the speedcubing community.
 
 #### No Progressive Skill Development
+
 Existing tools don't adapt to user skill levels or provide guidance for improvement, leaving beginners overwhelmed and advanced users under-challenged.
 
 ## 3. Functional Requirements
@@ -48,6 +59,7 @@ Existing tools don't adapt to user skill levels or provide guidance for improvem
 ### Core Timer System
 
 #### Timer Interface (FR-001)
+
 - Spacebar-activated start/stop mechanism following WCA standards
 - Visual countdown/ready indicator before timer starts
 - Large, clearly visible time display during solve
@@ -55,12 +67,14 @@ Existing tools don't adapt to user skill levels or provide guidance for improvem
 - Support for keyboard shortcuts for penalties and actions
 
 #### Scramble Generation (FR-002)
+
 - Automatic generation of WCA-compliant 3x3 scrambles
 - Display of scramble notation in standard format
 - New scramble generation after each solve
 - Visual scramble preview (future enhancement)
 
 #### Penalty System (FR-003)
+
 - DNF (Did Not Finish) marking capability
 - +2 second penalty option for misaligned finishes
 - Ability to modify penalties after solve completion
@@ -69,6 +83,7 @@ Existing tools don't adapt to user skill levels or provide guidance for improvem
 ### User Account Management
 
 #### Authentication System (FR-004)
+
 - Email/password-based registration
 - Mandatory email verification for new accounts
 - Secure password requirements (minimum 8 characters)
@@ -76,12 +91,14 @@ Existing tools don't adapt to user skill levels or provide guidance for improvem
 - Remember me functionality for trusted devices
 
 #### Password Management (FR-005)
+
 - Self-service password reset via email
 - Secure token-based reset links with expiration
 - Password strength indicator during registration/change
 - Optional password change from account settings
 
 #### User Profile (FR-006)
+
 - Unique username assignment
 - Profile visibility toggle (public/private)
 - Basic profile information editing
@@ -90,6 +107,7 @@ Existing tools don't adapt to user skill levels or provide guidance for improvem
 ### Statistics and Analytics
 
 #### Performance Metrics (FR-007)
+
 - Real-time calculation of Ao5 (Average of 5)
 - Real-time calculation of Ao12 (Average of 12)
 - Real-time calculation of Ao100 (Average of 100)
@@ -98,6 +116,7 @@ Existing tools don't adapt to user skill levels or provide guidance for improvem
 - Session-based statistics
 
 #### Visual Analytics (FR-008)
+
 - Line chart showing solve time progression
 - Bar chart for time distribution analysis
 - Trend indicators for improvement/regression
@@ -105,6 +124,7 @@ Existing tools don't adapt to user skill levels or provide guidance for improvem
 - Export capability for charts (future)
 
 #### Data Management (FR-009)
+
 - Storage of up to 10,000 solve records per user
 - Chronological solve history with pagination
 - Individual solve deletion capability
@@ -114,6 +134,7 @@ Existing tools don't adapt to user skill levels or provide guidance for improvem
 ### Social Features
 
 #### Public Profiles (FR-010)
+
 - Opt-in public profile functionality
 - Display of best single time
 - Display of best Ao5
@@ -122,6 +143,7 @@ Existing tools don't adapt to user skill levels or provide guidance for improvem
 - Recent activity feed (limited to last 10 solves)
 
 #### Sharing Capabilities (FR-011)
+
 - Direct link sharing for profiles
 - Social media integration preparation (future)
 - Achievement badges (future)
@@ -130,6 +152,7 @@ Existing tools don't adapt to user skill levels or provide guidance for improvem
 ### System Requirements
 
 #### Performance (FR-012)
+
 - Timer precision to milliseconds
 - Sub-100ms response time for timer start/stop
 - Page load time under 3 seconds
@@ -137,6 +160,7 @@ Existing tools don't adapt to user skill levels or provide guidance for improvem
 - Smooth animations at 60fps
 
 #### Compatibility (FR-013)
+
 - Support for modern browsers (Chrome 90+, Firefox 88+, Safari 14+, Edge 90+)
 - Responsive design for desktop and tablet
 - Keyboard navigation support
@@ -147,6 +171,7 @@ Existing tools don't adapt to user skill levels or provide guidance for improvem
 ### In Scope - MVP
 
 #### Core Functionality
+
 - 3x3 Rubik's cube timing and tracking
 - WCA-standard timer controls and penalties
 - User registration and authentication via Supabase
@@ -158,6 +183,7 @@ Existing tools don't adapt to user skill levels or provide guidance for improvem
 - Web-based interface only
 
 #### User Experience
+
 - Simplified onboarding for beginners
 - Standard speedcubing terminology and metrics
 - Clean, focused interface design
@@ -166,12 +192,14 @@ Existing tools don't adapt to user skill levels or provide guidance for improvem
 ### Out of Scope - MVP
 
 #### Cube Variations
+
 - Other cube types (2x2, 4x4, 5x5, etc.)
 - Non-cubic puzzles (Pyraminx, Megaminx, etc.)
 - Blindfolded solving categories
 - One-handed solving categories
 
 #### Advanced Features
+
 - Matchmaking and head-to-head competitions
 - Real-time multiplayer sessions
 - Advanced session management tools
@@ -180,6 +208,7 @@ Existing tools don't adapt to user skill levels or provide guidance for improvem
 - Video tutorials or learning content
 
 #### Platform Extensions
+
 - Native mobile applications (iOS/Android)
 - Desktop applications
 - Offline mode with sync
@@ -187,6 +216,7 @@ Existing tools don't adapt to user skill levels or provide guidance for improvem
 - API for third-party integrations
 
 #### Data and Compliance
+
 - Data import from other platforms
 - Data export in multiple formats (CSV, JSON)
 - GDPR compliance features
@@ -194,6 +224,7 @@ Existing tools don't adapt to user skill levels or provide guidance for improvem
 - Advanced privacy controls
 
 #### Monetization
+
 - Premium subscriptions
 - Ad integration
 - Paid features or storage upgrades
@@ -202,6 +233,7 @@ Existing tools don't adapt to user skill levels or provide guidance for improvem
 ### Future Considerations
 
 #### Phase 2 Features (Post-MVP)
+
 - Support for additional cube types
 - Advanced session management
 - Matchmaking system implementation
@@ -209,6 +241,7 @@ Existing tools don't adapt to user skill levels or provide guidance for improvem
 - Data import/export functionality
 
 #### Phase 3 Features
+
 - Competition hosting capabilities
 - Advanced analytics and insights
 - AI-powered improvement recommendations
@@ -220,6 +253,7 @@ Existing tools don't adapt to user skill levels or provide guidance for improvem
 ### Authentication and Account Management
 
 #### US-001: User Registration
+
 - Title: Create New Account
 - Description: As a new user, I want to create an account so that I can save my solve times persistently
 - Acceptance Criteria:
@@ -231,6 +265,7 @@ Existing tools don't adapt to user skill levels or provide guidance for improvem
   - User receives confirmation of email sent
 
 #### US-002: Email Verification
+
 - Title: Verify Email Address
 - Description: As a newly registered user, I want to verify my email address to activate my account
 - Acceptance Criteria:
@@ -241,6 +276,7 @@ Existing tools don't adapt to user skill levels or provide guidance for improvem
   - User can request new verification email
 
 #### US-003: User Login
+
 - Title: Access Account
 - Description: As a registered user, I want to log into my account to access my data
 - Acceptance Criteria:
@@ -251,6 +287,7 @@ Existing tools don't adapt to user skill levels or provide guidance for improvem
   - "Remember me" option maintains session for 30 days
 
 #### US-004: Password Reset
+
 - Title: Recover Account Access
 - Description: As a user who forgot my password, I want to reset it via email
 - Acceptance Criteria:
@@ -262,19 +299,23 @@ Existing tools don't adapt to user skill levels or provide guidance for improvem
   - All active sessions are terminated after password change
 
 #### US-005: Profile Management
+
 - Title: Update Profile Settings
 - Description: As a logged-in user, I want to manage my profile settings
 - Acceptance Criteria:
-  - User can change username (subject to uniqueness)
+  - User can view their username (read-only, cannot be changed)
   - User can toggle profile visibility (public/private)
   - User can view their email address (read-only, cannot be changed)
   - User can change password (requires current password)
   - Changes are saved with confirmation message
   - User can delete account with confirmation dialog
 
+**Note:** Username changes are NOT supported. Usernames are permanently assigned at registration.
+
 ### Timer Functionality
 
 #### US-006: Start Solving Session
+
 - Title: Begin Timing Practice
 - Description: As a user, I want to start a solving session to practice my cube solving
 - Acceptance Criteria:
@@ -285,6 +326,7 @@ Existing tools don't adapt to user skill levels or provide guidance for improvem
   - Timer is accessible via keyboard only
 
 #### US-007: Generate Scramble
+
 - Title: Get New Scramble
 - Description: As a user, I want to receive a random scramble for my solve
 - Acceptance Criteria:
@@ -296,6 +338,7 @@ Existing tools don't adapt to user skill levels or provide guidance for improvem
   - Scramble is saved with solve time
 
 #### US-008: Time a Solve
+
 - Title: Record Solve Time
 - Description: As a user, I want to time my solve using standard controls
 - Acceptance Criteria:
@@ -308,6 +351,7 @@ Existing tools don't adapt to user skill levels or provide guidance for improvem
   - Time is automatically saved to history
 
 #### US-009: Apply DNF Penalty
+
 - Title: Mark Failed Solve
 - Description: As a user, I want to mark a solve as DNF when I couldn't complete it
 - Acceptance Criteria:
@@ -319,6 +363,7 @@ Existing tools don't adapt to user skill levels or provide guidance for improvem
   - Visual indicator distinguishes DNF solves
 
 #### US-010: Apply +2 Penalty
+
 - Title: Add Time Penalty
 - Description: As a user, I want to add a +2 penalty for misaligned cube finish
 - Acceptance Criteria:
@@ -330,6 +375,7 @@ Existing tools don't adapt to user skill levels or provide guidance for improvem
   - Penalty status is saved with solve record
 
 #### US-011: Delete Solve
+
 - Title: Remove Solve Time
 - Description: As a user, I want to delete a solve time from my history
 - Acceptance Criteria:
@@ -343,6 +389,7 @@ Existing tools don't adapt to user skill levels or provide guidance for improvem
 ### Statistics and Progress Tracking
 
 #### US-012: View Current Session
+
 - Title: See Session Statistics
 - Description: As a user, I want to see my current session statistics
 - Acceptance Criteria:
@@ -354,6 +401,7 @@ Existing tools don't adapt to user skill levels or provide guidance for improvem
   - Session can be cleared/reset
 
 #### US-013: View Personal Records
+
 - Title: Track Best Performances
 - Description: As a user, I want to see my all-time best performances
 - Acceptance Criteria:
@@ -365,6 +413,7 @@ Existing tools don't adapt to user skill levels or provide guidance for improvem
   - Records persist across sessions
 
 #### US-014: View Solve History
+
 - Title: Browse Past Solves
 - Description: As a user, I want to view my complete solve history
 - Acceptance Criteria:
@@ -376,6 +425,7 @@ Existing tools don't adapt to user skill levels or provide guidance for improvem
   - Total solve count is displayed
 
 #### US-015: View Progress Charts
+
 - Title: Analyze Improvement Trends
 - Description: As a user, I want to see visual charts of my progress
 - Acceptance Criteria:
@@ -387,6 +437,7 @@ Existing tools don't adapt to user skill levels or provide guidance for improvem
   - Chart updates with new solves
 
 #### US-016: Calculate Running Averages
+
 - Title: See Standard Averages
 - Description: As a user, I want to see my running averages calculated correctly
 - Acceptance Criteria:
@@ -400,6 +451,7 @@ Existing tools don't adapt to user skill levels or provide guidance for improvem
 ### Social Features
 
 #### US-017: Make Profile Public
+
 - Title: Share Profile Publicly
 - Description: As a user, I want to make my profile public to share achievements
 - Acceptance Criteria:
@@ -411,6 +463,7 @@ Existing tools don't adapt to user skill levels or provide guidance for improvem
   - Default state is private
 
 #### US-018: View Public Profile
+
 - Title: Access Shared Profile
 - Description: As anyone with the link, I want to view a public profile
 - Acceptance Criteria:
@@ -422,6 +475,7 @@ Existing tools don't adapt to user skill levels or provide guidance for improvem
   - Private profiles show "Profile is private" message
 
 #### US-019: Share Profile Link
+
 - Title: Get Shareable URL
 - Description: As a user with a public profile, I want to share my profile link
 - Acceptance Criteria:
@@ -435,6 +489,7 @@ Existing tools don't adapt to user skill levels or provide guidance for improvem
 ### Data Management
 
 #### US-020: Export Solve Data
+
 - Title: Download My Data (Future)
 - Description: As a user, I want to export my solve data for backup
 - Acceptance Criteria:
@@ -446,6 +501,7 @@ Existing tools don't adapt to user skill levels or provide guidance for improvem
   - Date range selection available
 
 #### US-021: Manage Storage Limit
+
 - Title: Handle Storage Capacity
 - Description: As a user approaching 10,000 solves, I want to manage my storage
 - Acceptance Criteria:
@@ -459,6 +515,7 @@ Existing tools don't adapt to user skill levels or provide guidance for improvem
 ### Error Handling and Edge Cases
 
 #### US-022: Handle Timer Interruption
+
 - Title: Recover from Timer Error
 - Description: As a user experiencing timer interruption, I want to recover gracefully
 - Acceptance Criteria:
@@ -470,6 +527,7 @@ Existing tools don't adapt to user skill levels or provide guidance for improvem
   - User is notified of any issues
 
 #### US-023: Handle Session Timeout
+
 - Title: Re-authenticate Expired Session
 - Description: As a user with expired session, I want to log back in easily
 - Acceptance Criteria:
@@ -481,6 +539,7 @@ Existing tools don't adapt to user skill levels or provide guidance for improvem
   - Remember me prevents frequent timeouts
 
 #### US-024: Handle Concurrent Sessions
+
 - Title: Use Account from Multiple Devices
 - Description: As a user on multiple devices, I want consistent data everywhere
 - Acceptance Criteria:
@@ -494,6 +553,7 @@ Existing tools don't adapt to user skill levels or provide guidance for improvem
 ### Mobile Experience
 
 #### US-025: Access on Mobile Device
+
 - Title: View Stats on Phone
 - Description: As a mobile user, I want to check my statistics on my phone
 - Acceptance Criteria:
@@ -507,6 +567,7 @@ Existing tools don't adapt to user skill levels or provide guidance for improvem
 ### Accessibility
 
 #### US-026: Navigate with Keyboard
+
 - Title: Use Keyboard Navigation
 - Description: As a keyboard user, I want to navigate the entire application
 - Acceptance Criteria:
@@ -518,6 +579,7 @@ Existing tools don't adapt to user skill levels or provide guidance for improvem
   - Shortcuts don't conflict with screen readers
 
 #### US-027: Use with Screen Reader
+
 - Title: Access with Assistive Technology
 - Description: As a screen reader user, I want to use the application
 - Acceptance Criteria:
@@ -533,12 +595,14 @@ Existing tools don't adapt to user skill levels or provide guidance for improvem
 ### Primary KPIs
 
 #### User Engagement
+
 - Target: 90% of registered users have at least one solve time saved
 - Measurement: Count of users with solves / Total registered users
 - Timeline: Measured 30 days post-registration
 - Current: To be measured after launch
 
 #### Social Adoption
+
 - Target: 30% of active users have public profiles
 - Measurement: Public profiles / Active users (logged in last 30 days)
 - Timeline: Measured monthly after 3 months post-launch
@@ -547,18 +611,21 @@ Existing tools don't adapt to user skill levels or provide guidance for improvem
 ### Secondary KPIs
 
 #### User Retention
+
 - Target: 60% of users return within 7 days of registration
 - Measurement: 7-day retention cohort analysis
 - Timeline: Measured weekly
 - Threshold: Alert if drops below 40%
 
 #### Solving Activity
+
 - Target: Average of 20 solves per active user per week
 - Measurement: Total weekly solves / Weekly active users
 - Timeline: Measured weekly
 - Threshold: Success if above 15 solves
 
 #### Profile Engagement
+
 - Target: Public profiles receive average of 5 views per week
 - Measurement: Total profile views / Public profiles
 - Timeline: Measured weekly
@@ -567,12 +634,14 @@ Existing tools don't adapt to user skill levels or provide guidance for improvem
 ### Performance Metrics
 
 #### System Performance
+
 - Timer Accuracy: <10ms variance from true time
 - Page Load Speed: <3 seconds on 3G connection
 - API Response Time: <200ms for 95th percentile
 - Uptime: 99.9% availability
 
 #### User Experience
+
 - Registration Completion Rate: >80%
 - Email Verification Rate: >90%
 - Solve Save Success Rate: >99.9%
@@ -581,12 +650,14 @@ Existing tools don't adapt to user skill levels or provide guidance for improvem
 ### Growth Metrics
 
 #### User Acquisition
+
 - Target: 100 registered users in first month
 - Target: 500 registered users by month 3
 - Target: 1000 registered users by month 6
 - Organic vs. Referred: Track source attribution
 
 #### Data Growth
+
 - Average solves per user: Track monthly
 - Storage utilization: Monitor per-user average
 - Database growth rate: Project capacity needs
@@ -594,12 +665,14 @@ Existing tools don't adapt to user skill levels or provide guidance for improvem
 ### Quality Metrics
 
 #### Error Rates
+
 - JavaScript Error Rate: <0.1% of sessions
 - Failed Login Attempts: <5% of total attempts
 - Failed Save Attempts: <0.01% of solves
 - 404 Error Rate: <1% of page views
 
 #### User Satisfaction (Future)
+
 - NPS Score: Target >50
 - Support Ticket Rate: <2% of MAU
 - Feature Request Tracking: Categorize and prioritize
@@ -608,11 +681,13 @@ Existing tools don't adapt to user skill levels or provide guidance for improvem
 ### Business Impact
 
 #### Cost Efficiency
+
 - Infrastructure Cost per User: Track monthly
 - Storage Cost per 1000 Solves: Optimize over time
 - Support Cost per User: Minimize through good UX
 
 #### Market Position (Future)
+
 - Feature Parity: Compare with competitors
 - Unique Value Metrics: Track exclusive features usage
 - Community Growth: Monitor social sharing rate
@@ -620,18 +695,21 @@ Existing tools don't adapt to user skill levels or provide guidance for improvem
 ### Monitoring and Alerting
 
 #### Real-time Alerts
+
 - Server downtime
 - Database connection failures
 - Error rate spikes (>5x baseline)
 - Storage capacity warnings (>80%)
 
 #### Daily Reports
+
 - New user registrations
 - Active users
 - Total solves recorded
 - System performance summary
 
 #### Weekly Analysis
+
 - Retention cohort performance
 - Feature usage patterns
 - User journey drop-off points
@@ -640,6 +718,7 @@ Existing tools don't adapt to user skill levels or provide guidance for improvem
 ### Success Criteria Review
 
 The MVP will be considered successful if:
+
 1. Primary KPIs are met within 3 months of launch
 2. System performance metrics are consistently achieved
 3. User retention remains above 40% threshold
