@@ -1,4 +1,5 @@
-import { Typography, TypographyProps } from '@mui/material';
+import { Typography } from '@mui/material';
+import type { TypographyProps } from '@mui/material/Typography';
 import type { PenaltyType } from '../../types';
 import { formatTime } from '../utils/formatters';
 

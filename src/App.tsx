@@ -11,6 +11,7 @@ import ResetPasswordPage from './features/auth/pages/ResetPasswordPage';
 import UpdatePasswordPage from './features/auth/pages/UpdatePasswordPage';
 import VerifyEmailPage from './features/auth/pages/VerifyEmailPage';
 import DashboardPage from './features/timer/pages/DashboardPage';
+import HistoryPage from './features/timer/pages/HistoryPage';
 import ProfilePage from './features/profile/pages/ProfilePage';
 import PublicProfilePage from './features/profile/pages/PublicProfilePage';
 import ProtectedRoute from './features/auth/components/ProtectedRoute';
@@ -45,6 +46,14 @@ function App() {
             element={
               <ProtectedRoute>
                 <DashboardPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/history"
+            element={
+              <ProtectedRoute>
+                <HistoryPage />
               </ProtectedRoute>
             }
           />
