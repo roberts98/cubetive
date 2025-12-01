@@ -1,0 +1,20 @@
+name: 'Upload Coverage Report'
+description: 'Upload test coverage report to GitHub'
+
+inputs:
+  name:
+    description: 'Coverage report name'
+    required: true
+  path:
+    description: 'Path to coverage files'
+    required: true
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Upload coverage report
+      uses: actions/upload-artifact@v5
+      with:
+        name: ${{ inputs.name }}
+        path: ${{ inputs.path }}
+        retention-days: 30
