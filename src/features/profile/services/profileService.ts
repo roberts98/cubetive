@@ -141,3 +141,32 @@ export async function updateUsername(userId: string, newUsername: string): Promi
     throw error;
   }
 }
+
+/**
+ * Updates the profile visibility (public/private) for a given user.
+ *
+ * This allows users to toggle whether their profile is publicly accessible.
+ * Used in profile settings to control profile visibility.
+ *
+ * @param {string} userId - The user's ID (from auth.users)
+ * @param {boolean} isPublic - Whether the profile should be public
+ * @returns {Promise<void>}
+ * @throws {Error} Database errors from Supabase
+ *
+ * @example
+ * try {
+ *   await updateProfileVisibility(user.id, true);
+ * } catch (error) {
+ *   console.error('Failed to update profile visibility:', error);
+ * }
+ */
+export async function updateProfileVisibility(userId: string, isPublic: boolean): Promise<void> {
+  const { error } = await supabase
+    .from('profiles')
+    .update({ profile_visibility: isPublic })
+    .eq('id', userId);
+
+  if (error) {
+    throw error;
+  }
+}

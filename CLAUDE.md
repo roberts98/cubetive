@@ -46,6 +46,10 @@ npm run test:coverage    # Run tests with coverage
 - **lint-staged 16** for pre-commit checks
 - **Vitest 4** for testing
 
+### User Interface
+
+- **react-toastify 11** for toast notifications
+
 ### Hosting
 
 - **Vercel** (frontend)
@@ -382,6 +386,51 @@ function LoginForm() {
 - Material UI's `TextField` works seamlessly with `register()`
 - Access errors via `formState.errors`
 - Use `handleSubmit()` to wrap submission logic
+
+---
+
+## Notifications
+
+### react-toastify Integration
+
+We use **react-toastify** for all user-facing notifications (success, error, info, warning).
+
+**Setup:**
+
+1. `ToastContainer` is added to `App.tsx` (already configured)
+2. Use the notification utility wrapper at `/src/shared/utils/notifications.ts`
+
+**Usage:**
+
+```typescript
+import { showSuccess, showError, showInfo, showWarning } from '../../../shared/utils/notifications';
+
+// Success notification
+showSuccess('Profile visibility updated');
+
+// Error notification
+showError('Failed to update profile');
+
+// Info notification
+showInfo('Your session will expire in 5 minutes');
+
+// Warning notification
+showWarning('Approaching solve limit (10,000)');
+```
+
+**When to use notifications:**
+
+- Success: After successful mutations (profile updates, solve saves, etc.)
+- Error: When operations fail (API errors, validation failures)
+- Info: For informational messages (session status, tips)
+- Warning: For non-critical issues (approaching limits, session timeout)
+
+**Best Practices:**
+
+- Keep messages concise and user-friendly
+- Avoid technical jargon or raw error messages
+- Use appropriate notification types for context
+- Don't overuse notifications - only for important user feedback
 
 ---
 

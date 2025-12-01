@@ -213,15 +213,6 @@ export function findBestAo12(solves: SolveDTO[]): {
 Create `src/features/profile/services/profileService.ts` additions:
 
 ```typescript
-// Update profile settings (username, visibility)
-export async function updateProfileSettings(
-  userId: string,
-  updates: {
-    username?: string;
-    profile_visibility?: boolean;
-  }
-): Promise<void>;
-
 // Update profile statistics after solve
 export async function updateProfileStats(
   userId: string,
@@ -241,17 +232,19 @@ export async function updateProfileStats(
 export async function updateProfileVisibility(userId: string, isPublic: boolean): Promise<void>;
 ```
 
+**Note:** Username changes are NOT supported in the MVP. Usernames are assigned at registration and cannot be modified.
+
 **Component Updates:**
 
 Update `ProfilePage.tsx` to:
 
 - ✅ Load profile data using `useCurrentProfile()` hook
-- ✅ Display actual username, email, statistics
-- ✅ Enable username change with validation
+- ✅ Display actual username (read-only), email, statistics
 - ✅ Enable profile visibility toggle
 - ✅ Show PB single, Ao5, Ao12, total solves in Statistics tab
 - ✅ Add loading and error states
 - ✅ Add success/error notifications for updates
+- ✅ Use react-toastify for notifications
 
 **Key User Stories:** US-005, US-017
 
@@ -717,13 +710,16 @@ Choose one:
 npm install recharts
 ```
 
-### **Optional**
+### **Installed**
 
-- **react-toastify** - Toast notifications for PBs and errors
-- **date-fns** - Date formatting in history and charts
+- ✅ **react-toastify** - Toast notifications for PBs and errors
+
+**Optional**
+
+- **date-fns** - Date formatting in history and charts (if needed beyond native Date methods)
 
 ```bash
-npm install react-toastify date-fns
+npm install date-fns
 ```
 
 ---

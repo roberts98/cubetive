@@ -12,10 +12,15 @@ import {
   FormControlLabel,
   Switch,
   Link as MuiLink,
+  CircularProgress,
+  Alert,
 } from '@mui/material';
 import { useState } from 'react';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../../auth/stores/authStore';
+import { useCurrentProfile } from '../hooks/useProfile';
+import { useUpdateProfileVisibility } from '../hooks/useUpdateProfileVisibility';
+import { showSuccess, showError } from '../../../shared/utils/notifications';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -51,6 +56,16 @@ function ProfilePage() {
   const user = useAuthStore((state) => state.user);
   const [currentTab, setCurrentTab] = useState(0);
 
+  // Load profile data
+  const { data: profile, loading: profileLoading, error: profileError } = useCurrentProfile();
+
+  // Profile visibility update hook
+  const {
+    loading: updateLoading,
+    error: updateError,
+    execute: updateVisibility,
+  } = useUpdateProfileVisibility();
+
   const handleLogout = async () => {
     try {
       await signOut();
@@ -63,6 +78,70 @@ function ProfilePage() {
   const handleTabChange = (_event: React.SyntheticEvent, newValue: number) => {
     setCurrentTab(newValue);
   };
+
+  const handleVisibilityToggle = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const isPublic = event.target.checked;
+
+    try {
+      await updateVisibility(isPublic);
+      showSuccess(`Profile is now ${isPublic ? 'public' : 'private'}`);
+    } catch (error) {
+      showError('Failed to update profile visibility');
+      console.error('Failed to update visibility:', error);
+    }
+  };
+
+  /**
+   * Formats time in milliseconds to user-friendly format (seconds.hundredths)
+   */
+  const formatTime = (timeMs: number | null): string => {
+    if (timeMs === null) return 'N/A';
+
+    const totalSeconds = timeMs / 1000;
+    const seconds = Math.floor(totalSeconds);
+    const hundredths = Math.floor((totalSeconds - seconds) * 100);
+
+    return `${seconds}.${hundredths.toString().padStart(2, '0')}s`;
+  };
+
+  // Loading state
+  if (profileLoading) {
+    return (
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          minHeight: '100vh',
+        }}
+      >
+        <CircularProgress />
+      </Box>
+    );
+  }
+
+  // Error state
+  if (profileError || !profile) {
+    return (
+      <Box sx={{ flexGrow: 1 }}>
+        <AppBar position="static">
+          <Toolbar>
+            <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+              Cubetive
+            </Typography>
+            <Button color="inherit" onClick={handleLogout}>
+              Logout
+            </Button>
+          </Toolbar>
+        </AppBar>
+        <Container maxWidth="md" sx={{ mt: 4 }}>
+          <Alert severity="error">
+            {profileError?.message || 'Failed to load profile. Please try again.'}
+          </Alert>
+        </Container>
+      </Box>
+    );
+  }
 
   return (
     <Box sx={{ flexGrow: 1 }}>
@@ -114,20 +193,30 @@ function ProfilePage() {
             <TextField
               fullWidth
               label="Username"
-              helperText="3-30 characters, letters, numbers, _ and - only"
+              value={profile.username}
+              helperText="Username cannot be changed"
               sx={{ mb: 3 }}
               disabled
-              placeholder="Will be loaded from profile"
             />
             <FormControlLabel
-              control={<Switch />}
+              control={
+                <Switch
+                  checked={profile.profile_visibility ?? false}
+                  onChange={handleVisibilityToggle}
+                  disabled={updateLoading}
+                />
+              }
               label="Make profile public"
               sx={{ mb: 2 }}
-              disabled
             />
             <Typography variant="caption" color="text.secondary" display="block">
               Public profiles can be shared via a unique URL
             </Typography>
+            {updateError && (
+              <Alert severity="error" sx={{ mt: 2 }}>
+                {updateError.message}
+              </Alert>
+            )}
           </TabPanel>
 
           <TabPanel value={currentTab} index={1}>
@@ -159,18 +248,49 @@ function ProfilePage() {
             <Typography variant="h6" gutterBottom>
               Statistics
             </Typography>
-            <Typography variant="body1" color="text.secondary">
-              Your solving statistics will appear here once implemented.
-            </Typography>
-            <Box sx={{ mt: 3, p: 3, bgcolor: 'grey.100', borderRadius: 2 }}>
-              <Typography variant="body2">
-                • Personal Best Single
-                <br />
-                • Best Average of 5 (Ao5)
-                <br />
-                • Best Average of 12 (Ao12)
-                <br />• Total Solves
-              </Typography>
+            <Box sx={{ mt: 2, display: 'flex', flexDirection: 'column', gap: 2 }}>
+              <Paper elevation={1} sx={{ p: 2 }}>
+                <Typography variant="subtitle2" color="text.secondary">
+                  Personal Best Single
+                </Typography>
+                <Typography variant="h5">{formatTime(profile.pb_single)}</Typography>
+                {profile.pb_single_date && (
+                  <Typography variant="caption" color="text.secondary">
+                    {new Date(profile.pb_single_date).toLocaleDateString()}
+                  </Typography>
+                )}
+              </Paper>
+
+              <Paper elevation={1} sx={{ p: 2 }}>
+                <Typography variant="subtitle2" color="text.secondary">
+                  Best Average of 5 (Ao5)
+                </Typography>
+                <Typography variant="h5">{formatTime(profile.pb_ao5)}</Typography>
+                {profile.pb_ao5_date && (
+                  <Typography variant="caption" color="text.secondary">
+                    {new Date(profile.pb_ao5_date).toLocaleDateString()}
+                  </Typography>
+                )}
+              </Paper>
+
+              <Paper elevation={1} sx={{ p: 2 }}>
+                <Typography variant="subtitle2" color="text.secondary">
+                  Best Average of 12 (Ao12)
+                </Typography>
+                <Typography variant="h5">{formatTime(profile.pb_ao12)}</Typography>
+                {profile.pb_ao12_date && (
+                  <Typography variant="caption" color="text.secondary">
+                    {new Date(profile.pb_ao12_date).toLocaleDateString()}
+                  </Typography>
+                )}
+              </Paper>
+
+              <Paper elevation={1} sx={{ p: 2 }}>
+                <Typography variant="subtitle2" color="text.secondary">
+                  Total Solves
+                </Typography>
+                <Typography variant="h5">{profile.total_solves}</Typography>
+              </Paper>
             </Box>
           </TabPanel>
         </Paper>

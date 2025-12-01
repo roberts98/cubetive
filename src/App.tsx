@@ -1,6 +1,8 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { ThemeProvider, CssBaseline } from '@mui/material';
 import { useEffect } from 'react';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import { theme } from './shared/theme/theme';
 import LandingPage from './features/landing/pages/LandingPage';
 import LoginPage from './features/auth/pages/LoginPage';
@@ -24,6 +26,7 @@ function App() {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
+      <ToastContainer />
       <Router>
         <Routes>
           {/* Public routes */}
