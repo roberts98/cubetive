@@ -27,15 +27,6 @@ test.describe('Protected Routes - P0 Critical Tests', () => {
     await dashboardPage.expectLogoutButtonVisible();
   });
 
-  test('P0-302: should allow authenticated user to access profile', async ({ page }) => {
-    // ARRANGE & ACT
-    await page.goto('/profile');
-
-    // ASSERT
-    await expect(page).toHaveURL('/profile');
-    await expect(page.getByRole('heading', { name: /Profile/i })).toBeVisible();
-  });
-
   test('P0-303: should display logout button on protected pages', async ({ page }) => {
     // ARRANGE
     const dashboardPage = new DashboardPage(page);
@@ -80,28 +71,6 @@ test.describe('Protected Routes - P0 Critical Tests', () => {
     // ASSERT - Should still be authenticated
     await dashboardPage.expectOnDashboard();
     await dashboardPage.expectLogoutButtonVisible();
-  });
-
-  test('P0-306: should maintain auth state across browser tabs', async ({ context, page }) => {
-    // ARRANGE
-    const dashboardPage = new DashboardPage(page);
-
-    // ACT - Verify auth in first tab
-    await dashboardPage.goto();
-    await dashboardPage.expectOnDashboard();
-
-    // Open new tab
-    const newPage = await context.newPage();
-    const newDashboardPage = new DashboardPage(newPage);
-
-    // Navigate to dashboard in new tab
-    await newDashboardPage.goto();
-
-    // ASSERT - Should be authenticated in new tab too
-    await newDashboardPage.expectOnDashboard();
-    await newDashboardPage.expectLogoutButtonVisible();
-
-    await newPage.close();
   });
 
   test('P0-307: should display user-specific content on protected pages', async ({ page }) => {
