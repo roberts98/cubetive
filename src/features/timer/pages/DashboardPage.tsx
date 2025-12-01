@@ -3,10 +3,12 @@ import { Typography, Box, Paper, CircularProgress, Alert, Divider } from '@mui/m
 import { PageLayout } from '../../../shared/components';
 import ScrambleDisplay from '../components/ScrambleDisplay';
 import TimerDisplay from '../components/TimerDisplay';
+import PenaltyButtons from '../components/PenaltyButtons';
 import ProgressChart from '../components/ProgressChart';
 import DateRangeSelector, { type DateRange } from '../components/DateRangeSelector';
 import StatsOverview from '../components/StatsOverview';
 import { useFilteredSolves } from '../hooks/useFilteredSolves';
+import { useTimer } from '../hooks/useTimer';
 import { calculateAo5, calculateAo12, findPersonalBest } from '../utils/statistics';
 import { useDataRefresh } from '../../../shared/hooks/useDataRefresh';
 
@@ -18,6 +20,9 @@ import { useDataRefresh } from '../../../shared/hooks/useDataRefresh';
  */
 function DashboardPage() {
   const [dateRange, setDateRange] = useState<DateRange>('30d');
+
+  // Get timer state to show penalty buttons
+  const { state: timerState } = useTimer();
 
   // Fetch filtered solves based on date range
   const { solves, loading, error, refetch } = useFilteredSolves(dateRange);
@@ -64,21 +69,26 @@ function DashboardPage() {
           {/* Timer Display */}
           <TimerDisplay />
 
+          {/* Penalty Buttons - shown when timer is stopped */}
+          {timerState === 'stopped' && <PenaltyButtons />}
+
           {/* Instructions */}
-          <Box sx={{ mt: 4, textAlign: 'center' }}>
-            <Typography variant="body2" color="text.secondary" paragraph>
-              <strong>How to use:</strong>
-            </Typography>
-            <Typography variant="body2" color="text.secondary">
-              1. Press and hold the spacebar for 0.5 seconds (timer will turn green)
-              <br />
-              2. Release the spacebar to start timing
-              <br />
-              3. Press the spacebar again to stop the timer
-              <br />
-              4. Your time will be automatically saved
-            </Typography>
-          </Box>
+          {timerState !== 'stopped' && (
+            <Box sx={{ mt: 4, textAlign: 'center' }}>
+              <Typography variant="body2" color="text.secondary" paragraph>
+                <strong>How to use:</strong>
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                1. Press and hold the spacebar for 0.5 seconds (timer will turn green)
+                <br />
+                2. Release the spacebar to start timing
+                <br />
+                3. Press the spacebar again to stop the timer
+                <br />
+                4. Select penalty (DNF, +2, or OK) to save your solve
+              </Typography>
+            </Box>
+          )}
         </Box>
 
         <Divider sx={{ my: 2 }} />

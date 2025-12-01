@@ -88,7 +88,7 @@ function TimerDisplay() {
         {state === 'idle' && 'Press spacebar to start'}
         {state === 'ready' && 'Release to start'}
         {state === 'running' && 'Solving...'}
-        {state === 'stopped' && 'Press spacebar for next solve'}
+        {state === 'stopped' && 'Select penalty to save your solve'}
       </Typography>
     </Box>
   );
