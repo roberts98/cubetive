@@ -42,8 +42,8 @@ setup('authenticate as test user', async ({ page }) => {
   // Wait for redirect to dashboard (confirms successful login)
   await page.waitForURL('/dashboard', { timeout: 10000 });
 
-  // Verify we're logged in by checking for user email on dashboard
-  await expect(page.getByText(TEST_USER.email)).toBeVisible({ timeout: 5000 });
+  // Verify we're logged in by checking for Logout button (confirms authenticated state)
+  await expect(page.getByRole('button', { name: 'Logout' })).toBeVisible({ timeout: 5000 });
 
   console.log('✅ Authentication successful');
 

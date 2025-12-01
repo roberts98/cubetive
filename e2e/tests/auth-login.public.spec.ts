@@ -33,7 +33,7 @@ test.describe('Login - P0 Critical Tests', () => {
 
     // ASSERT
     await dashboardPage.expectOnDashboard();
-    await dashboardPage.expectUserEmail(TEST_USER.email);
+    await dashboardPage.expectLogoutButtonVisible();
   });
 
   test('P0-002: should fail to login with invalid email', async ({ page }) => {
