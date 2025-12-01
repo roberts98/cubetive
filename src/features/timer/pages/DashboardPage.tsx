@@ -5,22 +5,22 @@ import {
   Toolbar,
   Button,
   Box,
-  Paper,
   Link as MuiLink,
 } from '@mui/material';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../../auth/stores/authStore';
+import ScrambleDisplay from '../components/ScrambleDisplay';
+import TimerDisplay from '../components/TimerDisplay';
 
 /**
  * DashboardPage
  *
- * Main authenticated landing page.
- * Shows timer interface (to be implemented) and navigation.
+ * Main authenticated landing page with timer interface.
+ * Provides WCA-standard timing controls for speedcubing practice.
  */
 function DashboardPage() {
   const navigate = useNavigate();
   const signOut = useAuthStore((state) => state.signOut);
-  const user = useAuthStore((state) => state.user);
 
   const handleLogout = async () => {
     try {
@@ -32,7 +32,7 @@ function DashboardPage() {
   };
 
   return (
-    <Box sx={{ flexGrow: 1 }}>
+    <Box sx={{ flexGrow: 1, minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
       {/* Navigation Bar */}
       <AppBar position="static">
         <Toolbar>
@@ -54,32 +54,29 @@ function DashboardPage() {
         </Toolbar>
       </AppBar>
 
-      {/* Main Content */}
-      <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
-        <Paper elevation={3} sx={{ p: 4, textAlign: 'center' }}>
-          <Typography variant="h3" component="h1" gutterBottom>
-            Welcome to Cubetive
+      {/* Main Content - Timer Interface */}
+      <Container maxWidth="md" sx={{ mt: 4, mb: 4, flexGrow: 1 }}>
+        {/* Scramble Display */}
+        <ScrambleDisplay />
+
+        {/* Timer Display */}
+        <TimerDisplay />
+
+        {/* Instructions */}
+        <Box sx={{ mt: 4, textAlign: 'center' }}>
+          <Typography variant="body2" color="text.secondary" paragraph>
+            <strong>How to use:</strong>
           </Typography>
-          <Typography variant="h6" color="text.secondary" gutterBottom>
-            {user?.email}
+          <Typography variant="body2" color="text.secondary">
+            1. Press and hold the spacebar for 0.5 seconds (timer will turn green)
+            <br />
+            2. Release the spacebar to start timing
+            <br />
+            3. Press the spacebar again to stop the timer
+            <br />
+            4. Your time will be automatically saved
           </Typography>
-          <Typography variant="body1" sx={{ mt: 3, mb: 3 }}>
-            This is your dashboard. The timer interface will be implemented here.
-          </Typography>
-          <Box sx={{ mt: 4, p: 3, bgcolor: 'grey.100', borderRadius: 2 }}>
-            <Typography variant="h5" gutterBottom>
-              Coming Soon:
-            </Typography>
-            <Typography variant="body1">
-              • Rubik's Cube Timer
-              <br />
-              • Scramble Generator
-              <br />
-              • Session Statistics
-              <br />• Solve History
-            </Typography>
-          </Box>
-        </Paper>
+        </Box>
       </Container>
     </Box>
   );
