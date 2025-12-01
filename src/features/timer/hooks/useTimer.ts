@@ -7,7 +7,7 @@
  * WCA Timer Rules:
  * 1. Press and hold spacebar for 0.5 seconds → ready state (green)
  * 2. Release spacebar → timer starts
- * 3. Press spacebar again → timer stops
+ * 3. Press any key → timer stops
  * 4. Time is recorded and solve is saved
  */
 
@@ -146,26 +146,14 @@ export function useTimer(): UseTimerReturn {
    * Handles spacebar key down event
    */
   const handleKeyDown = (event: KeyboardEvent) => {
-    // Only handle spacebar
-    if (event.code !== 'Space') return;
-
-    // Prevent default scrolling behavior
-    event.preventDefault();
-
-    // Ignore if already pressed (key repeat)
-    if (isSpacePressed.current) return;
-
-    isSpacePressed.current = true;
-
     const currentState = useTimerStore.getState().state;
     const currentElapsedTime = useTimerStore.getState().elapsedTime;
 
-    if (currentState === 'idle') {
-      // Start ready countdown (0.5 second hold)
-      readyTimeoutRef.current = window.setTimeout(() => {
-        setState('ready');
-      }, READY_DELAY_MS);
-    } else if (currentState === 'running') {
+    // If timer is running, stop it on ANY key press
+    if (currentState === 'running') {
+      // Prevent default behavior
+      event.preventDefault();
+
       // Stop timer
       setState('stopped');
 
@@ -181,6 +169,25 @@ export function useTimer(): UseTimerReturn {
 
       // Don't save immediately - wait for penalty selection
       // User will use PenaltyButtons component to select penalty and save
+      return;
+    }
+
+    // Only handle spacebar for start/ready states
+    if (event.code !== 'Space') return;
+
+    // Prevent default scrolling behavior
+    event.preventDefault();
+
+    // Ignore if already pressed (key repeat)
+    if (isSpacePressed.current) return;
+
+    isSpacePressed.current = true;
+
+    if (currentState === 'idle') {
+      // Start ready countdown (0.5 second hold)
+      readyTimeoutRef.current = window.setTimeout(() => {
+        setState('ready');
+      }, READY_DELAY_MS);
     }
   };
 
