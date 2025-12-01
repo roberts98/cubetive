@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { AuthService } from './authService';
 import { supabase } from '../../../db/supabase';
-import type { User, Session } from '@supabase/supabase-js';
+import type { User, Session, AuthError } from '@supabase/supabase-js';
 
 // Mock the Supabase client
 vi.mock('../../../db/supabase', () => ({
@@ -74,7 +74,13 @@ describe('AuthService', () => {
     it('should throw mapped error for duplicate email', async () => {
       vi.mocked(supabase.auth.signUp).mockResolvedValue({
         data: { user: null, session: null },
-        error: { message: 'User already registered', name: 'AuthError', status: 400 },
+        error: {
+          message: 'User already registered',
+          name: 'AuthError',
+          status: 400,
+          code: 'user_already_exists',
+          __isAuthError: true,
+        } as unknown as AuthError,
       });
 
       await expect(
@@ -89,7 +95,9 @@ describe('AuthService', () => {
           message: 'Password should be at least 8 characters',
           name: 'AuthError',
           status: 400,
-        },
+          code: 'weak_password',
+          __isAuthError: true,
+        } as unknown as AuthError,
       });
 
       await expect(AuthService.register('test@example.com', 'weak', 'testuser')).rejects.toThrow(
@@ -100,7 +108,13 @@ describe('AuthService', () => {
     it('should throw default error for unknown errors', async () => {
       vi.mocked(supabase.auth.signUp).mockResolvedValue({
         data: { user: null, session: null },
-        error: { message: 'Unknown error occurred', name: 'AuthError', status: 500 },
+        error: {
+          message: 'Unknown error occurred',
+          name: 'AuthError',
+          status: 500,
+          code: 'error',
+          __isAuthError: true,
+        } as unknown as AuthError,
       });
 
       await expect(
@@ -128,7 +142,13 @@ describe('AuthService', () => {
     it('should throw mapped error for invalid credentials', async () => {
       vi.mocked(supabase.auth.signInWithPassword).mockResolvedValue({
         data: { user: null, session: null },
-        error: { message: 'Invalid login credentials', name: 'AuthError', status: 400 },
+        error: {
+          message: 'Invalid login credentials',
+          name: 'AuthError',
+          status: 400,
+          code: 'error',
+          __isAuthError: true,
+        } as unknown as AuthError,
       });
 
       await expect(AuthService.login('test@example.com', 'wrongpassword')).rejects.toThrow(
@@ -156,7 +176,13 @@ describe('AuthService', () => {
     it('should map "User not found" to user-friendly message', async () => {
       vi.mocked(supabase.auth.signInWithPassword).mockResolvedValue({
         data: { user: null, session: null },
-        error: { message: 'User not found', name: 'AuthError', status: 400 },
+        error: {
+          message: 'User not found',
+          name: 'AuthError',
+          status: 400,
+          code: 'error',
+          __isAuthError: true,
+        } as unknown as AuthError,
       });
 
       await expect(AuthService.login('nonexistent@example.com', 'password123')).rejects.toThrow(
@@ -177,7 +203,13 @@ describe('AuthService', () => {
 
     it('should throw error if sign out fails', async () => {
       vi.mocked(supabase.auth.signOut).mockResolvedValue({
-        error: { message: 'Sign out failed', name: 'AuthError', status: 500 },
+        error: {
+          message: 'Sign out failed',
+          name: 'AuthError',
+          status: 500,
+          code: 'error',
+          __isAuthError: true,
+        } as unknown as AuthError,
       });
 
       await expect(AuthService.logout()).rejects.toThrow('An error occurred. Please try again.');
@@ -211,7 +243,13 @@ describe('AuthService', () => {
     it('should throw error if getSession fails', async () => {
       vi.mocked(supabase.auth.getSession).mockResolvedValue({
         data: { session: null },
-        error: { message: 'Failed to get session', name: 'AuthError', status: 500 },
+        error: {
+          message: 'Failed to get session',
+          name: 'AuthError',
+          status: 500,
+          code: 'error',
+          __isAuthError: true,
+        } as unknown as AuthError,
       });
 
       await expect(AuthService.getSession()).rejects.toThrow(
@@ -235,7 +273,7 @@ describe('AuthService', () => {
 
     it('should return null if no user is authenticated', async () => {
       vi.mocked(supabase.auth.getUser).mockResolvedValue({
-        data: { user: null },
+        data: { user: null as unknown as User },
         error: null,
       });
 
@@ -247,7 +285,13 @@ describe('AuthService', () => {
     it('should throw error if getUser fails', async () => {
       vi.mocked(supabase.auth.getUser).mockResolvedValue({
         data: { user: null },
-        error: { message: 'Failed to get user', name: 'AuthError', status: 500 },
+        error: {
+          message: 'Failed to get user',
+          name: 'AuthError',
+          status: 500,
+          code: 'error',
+          __isAuthError: true,
+        } as unknown as AuthError,
       });
 
       await expect(AuthService.getCurrentUser()).rejects.toThrow(
@@ -272,8 +316,14 @@ describe('AuthService', () => {
 
     it('should throw error if password reset fails', async () => {
       vi.mocked(supabase.auth.resetPasswordForEmail).mockResolvedValue({
-        data: {},
-        error: { message: 'Failed to send reset email', name: 'AuthError', status: 500 },
+        data: null,
+        error: {
+          message: 'Failed to send reset email',
+          name: 'AuthError',
+          status: 500,
+          code: 'error',
+          __isAuthError: true,
+        } as unknown as AuthError,
       });
 
       await expect(AuthService.requestPasswordReset('test@example.com')).rejects.toThrow(
@@ -283,8 +333,14 @@ describe('AuthService', () => {
 
     it('should map invalid email error', async () => {
       vi.mocked(supabase.auth.resetPasswordForEmail).mockResolvedValue({
-        data: {},
-        error: { message: 'Invalid email', name: 'AuthError', status: 400 },
+        data: null,
+        error: {
+          message: 'Invalid email',
+          name: 'AuthError',
+          status: 400,
+          code: 'error',
+          __isAuthError: true,
+        } as unknown as AuthError,
       });
 
       await expect(AuthService.requestPasswordReset('invalid-email')).rejects.toThrow(
@@ -310,7 +366,13 @@ describe('AuthService', () => {
     it('should throw error if password update fails', async () => {
       vi.mocked(supabase.auth.updateUser).mockResolvedValue({
         data: { user: null },
-        error: { message: 'Failed to update password', name: 'AuthError', status: 500 },
+        error: {
+          message: 'Failed to update password',
+          name: 'AuthError',
+          status: 500,
+          code: 'error',
+          __isAuthError: true,
+        } as unknown as AuthError,
       });
 
       await expect(AuthService.updatePassword('newPassword123')).rejects.toThrow(
@@ -325,7 +387,9 @@ describe('AuthService', () => {
           message: 'Password should be at least 8 characters',
           name: 'AuthError',
           status: 400,
-        },
+          code: 'weak_password',
+          __isAuthError: true,
+        } as unknown as AuthError,
       });
 
       await expect(AuthService.updatePassword('weak')).rejects.toThrow(
@@ -337,7 +401,7 @@ describe('AuthService', () => {
   describe('resendVerificationEmail', () => {
     it('should successfully resend verification email', async () => {
       vi.mocked(supabase.auth.resend).mockResolvedValue({
-        data: { messageId: 'test-message-id' },
+        data: { user: null, session: null, messageId: 'test-message-id' },
         error: null,
       });
 
@@ -356,8 +420,14 @@ describe('AuthService', () => {
 
     it('should throw error if resend fails', async () => {
       vi.mocked(supabase.auth.resend).mockResolvedValue({
-        data: { messageId: null },
-        error: { message: 'Failed to resend email', name: 'AuthError', status: 500 },
+        data: { user: null, session: null, messageId: null },
+        error: {
+          message: 'Failed to resend email',
+          name: 'AuthError',
+          status: 500,
+          code: 'error',
+          __isAuthError: true,
+        } as unknown as AuthError,
       });
 
       await expect(AuthService.resendVerificationEmail('test@example.com')).rejects.toThrow(
@@ -414,7 +484,13 @@ describe('AuthService', () => {
     it('should throw error for invalid or expired token', async () => {
       vi.mocked(supabase.auth.verifyOtp).mockResolvedValue({
         data: { user: null, session: null },
-        error: { message: 'Token has expired or is invalid', name: 'AuthError', status: 400 },
+        error: {
+          message: 'Token has expired or is invalid',
+          name: 'AuthError',
+          status: 400,
+          code: 'error',
+          __isAuthError: true,
+        } as unknown as AuthError,
       });
 
       await expect(AuthService.verifyOtp('invalid-token')).rejects.toThrow(
@@ -443,7 +519,13 @@ describe('AuthService', () => {
     it('should throw error for invalid code', async () => {
       vi.mocked(supabase.auth.verifyOtp).mockResolvedValue({
         data: { user: null, session: null },
-        error: { message: 'Invalid or expired verification code', name: 'AuthError', status: 400 },
+        error: {
+          message: 'Invalid or expired verification code',
+          name: 'AuthError',
+          status: 400,
+          code: 'error',
+          __isAuthError: true,
+        } as unknown as AuthError,
       });
 
       await expect(AuthService.verifyEmailWithCode('test@example.com', '000000')).rejects.toThrow(
@@ -456,7 +538,13 @@ describe('AuthService', () => {
     it('should map "Invalid login credentials" to user-friendly message', async () => {
       vi.mocked(supabase.auth.signInWithPassword).mockResolvedValue({
         data: { user: null, session: null },
-        error: { message: 'Invalid login credentials', name: 'AuthError', status: 400 },
+        error: {
+          message: 'Invalid login credentials',
+          name: 'AuthError',
+          status: 400,
+          code: 'error',
+          __isAuthError: true,
+        } as unknown as AuthError,
       });
 
       await expect(AuthService.login('test@example.com', 'wrong')).rejects.toThrow(
@@ -467,7 +555,13 @@ describe('AuthService', () => {
     it('should map "Email not confirmed" to user-friendly message', async () => {
       vi.mocked(supabase.auth.signInWithPassword).mockResolvedValue({
         data: { user: null, session: null },
-        error: { message: 'Email not confirmed', name: 'AuthError', status: 400 },
+        error: {
+          message: 'Email not confirmed',
+          name: 'AuthError',
+          status: 400,
+          code: 'error',
+          __isAuthError: true,
+        } as unknown as AuthError,
       });
 
       await expect(AuthService.login('test@example.com', 'password')).rejects.toThrow(
@@ -478,7 +572,13 @@ describe('AuthService', () => {
     it('should map "Username already exists" to user-friendly message', async () => {
       vi.mocked(supabase.auth.signUp).mockResolvedValue({
         data: { user: null, session: null },
-        error: { message: 'Username already exists', name: 'AuthError', status: 400 },
+        error: {
+          message: 'Username already exists',
+          name: 'AuthError',
+          status: 400,
+          code: 'error',
+          __isAuthError: true,
+        } as unknown as AuthError,
       });
 
       await expect(
@@ -493,7 +593,9 @@ describe('AuthService', () => {
           message: 'Something went wrong: Invalid login credentials',
           name: 'AuthError',
           status: 400,
-        },
+          code: 'invalid_credentials',
+          __isAuthError: true,
+        } as unknown as AuthError,
       });
 
       await expect(AuthService.login('test@example.com', 'wrong')).rejects.toThrow(
@@ -504,7 +606,13 @@ describe('AuthService', () => {
     it('should return default message for unmapped errors', async () => {
       vi.mocked(supabase.auth.signInWithPassword).mockResolvedValue({
         data: { user: null, session: null },
-        error: { message: 'Network error occurred', name: 'AuthError', status: 500 },
+        error: {
+          message: 'Network error occurred',
+          name: 'AuthError',
+          status: 500,
+          code: 'error',
+          __isAuthError: true,
+        } as unknown as AuthError,
       });
 
       await expect(AuthService.login('test@example.com', 'password')).rejects.toThrow(

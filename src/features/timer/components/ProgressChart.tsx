@@ -147,9 +147,13 @@ function ProgressChart({ solves, showMovingAverage = true }: ProgressChartProps)
               borderRadius: theme.shape.borderRadius,
             }}
             labelStyle={{ color: theme.palette.text.primary }}
-            formatter={(value: number | null, name: string) => {
-              if (value === null) return ['DNF', name];
-              return [formatTimeForChart(value) + 's', name];
+            formatter={(
+              value: number | string | readonly (string | number)[] | null,
+              name: string
+            ) => {
+              if (value === null || typeof value === 'string' || Array.isArray(value))
+                return ['DNF', name];
+              return [formatTimeForChart(value as number) + 's', name];
             }}
           />
           <Legend wrapperStyle={{ color: theme.palette.text.primary }} iconType="line" />
