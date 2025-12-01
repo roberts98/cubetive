@@ -22,6 +22,7 @@ import { showSuccess, showError } from '../../../shared/utils/notifications';
 import { PageLayout, StatisticsGrid, TabPanel } from '../../../shared/components';
 import { getProfileUrl } from '../../../shared/utils/formatters';
 import { useClipboard } from '../../../shared/hooks/useClipboard';
+import { useDataRefresh } from '../../../shared/hooks/useDataRefresh';
 
 /**
  * ProfilePage
@@ -34,7 +35,15 @@ function ProfilePage() {
   const [currentTab, setCurrentTab] = useState(0);
 
   // Load profile data
-  const { data: profile, loading: profileLoading, error: profileError } = useCurrentProfile();
+  const {
+    data: profile,
+    loading: profileLoading,
+    error: profileError,
+    execute: refetchProfile,
+  } = useCurrentProfile();
+
+  // Subscribe to profile data changes - automatically refetch when profile updates
+  useDataRefresh('profile', refetchProfile);
 
   // Profile visibility update hook
   const {
