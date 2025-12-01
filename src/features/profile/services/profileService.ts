@@ -1,5 +1,10 @@
 import { supabase } from '../../../db/supabase';
-import type { ProfileDTO, PublicProfileWithSolves, PublicSolveDTO } from '../../../types';
+import type {
+  ProfileDTO,
+  PublicProfileWithSolves,
+  PublicSolveDTO,
+  UpdateProfileStatsCommand,
+} from '../../../types';
 
 /**
  * Fetches the authenticated user's complete profile data from Supabase.
@@ -165,6 +170,41 @@ export async function updateProfileVisibility(userId: string, isPublic: boolean)
     .from('profiles')
     .update({ profile_visibility: isPublic })
     .eq('id', userId);
+
+  if (error) {
+    throw error;
+  }
+}
+
+/**
+ * Updates the profile statistics after a new solve is recorded.
+ *
+ * This function is called automatically after each solve to update personal bests
+ * and solve counts in the profile. It accepts partial stats to allow updating
+ * only the fields that have changed (e.g., just total_solves or just pb_single).
+ *
+ * @param {string} userId - The user's ID (from auth.users)
+ * @param {UpdateProfileStatsCommand} stats - The statistics to update (partial)
+ * @returns {Promise<void>}
+ * @throws {Error} Database errors from Supabase
+ *
+ * @example
+ * try {
+ *   await updateProfileStats(user.id, {
+ *     pb_single: 8540, // 8.54 seconds
+ *     pb_single_date: '2025-12-01T10:30:00Z',
+ *     pb_single_scramble: "D2 F' U2 L2...",
+ *     total_solves: 150
+ *   });
+ * } catch (error) {
+ *   console.error('Failed to update profile stats:', error);
+ * }
+ */
+export async function updateProfileStats(
+  userId: string,
+  stats: UpdateProfileStatsCommand
+): Promise<void> {
+  const { error } = await supabase.from('profiles').update(stats).eq('id', userId);
 
   if (error) {
     throw error;

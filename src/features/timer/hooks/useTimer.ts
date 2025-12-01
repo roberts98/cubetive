@@ -16,6 +16,7 @@ import { useTimerStore } from '../stores/timerStore';
 import { useAuthStore } from '../../auth/stores/authStore';
 import { saveSolve } from '../services/solvesService';
 import { useScramble } from './useScramble';
+import { useProfileStatsSync } from './useProfileStatsSync';
 import type { TimerState } from '../types/timer.types';
 
 const READY_DELAY_MS = 500; // 0.5 seconds hold before ready
@@ -56,6 +57,7 @@ export function useTimer(): UseTimerReturn {
   const setLastSolveTime = useTimerStore((s) => s.setLastSolveTime);
 
   const { generateScramble } = useScramble();
+  const { syncAfterSolve } = useProfileStatsSync();
 
   // Refs for timing and state management
   const readyTimeoutRef = useRef<number | null>(null);
@@ -93,7 +95,7 @@ export function useTimer(): UseTimerReturn {
   };
 
   /**
-   * Saves the completed solve to database
+   * Saves the completed solve to database and syncs profile stats
    */
   const saveSolveToDatabase = async (timeMs: number) => {
     try {
@@ -118,12 +120,17 @@ export function useTimer(): UseTimerReturn {
         user_id: user.id,
       });
 
+      // Save solve to database
       await saveSolve({
         user_id: user.id,
         time_ms: roundedTime,
         scramble: useTimerStore.getState().currentScramble,
         penalty_type: null,
       });
+
+      // Sync profile stats after successful save
+      // This runs asynchronously and won't block the UI
+      syncAfterSolve();
 
       // Generate new scramble after successful save
       generateScramble();

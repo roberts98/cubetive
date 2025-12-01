@@ -8,6 +8,7 @@ import DateRangeSelector, { type DateRange } from '../components/DateRangeSelect
 import StatsOverview from '../components/StatsOverview';
 import { useFilteredSolves } from '../hooks/useFilteredSolves';
 import { calculateAo5, calculateAo12, findPersonalBest } from '../utils/statistics';
+import { useDataRefresh } from '../../../shared/hooks/useDataRefresh';
 
 /**
  * DashboardPage
@@ -19,7 +20,10 @@ function DashboardPage() {
   const [dateRange, setDateRange] = useState<DateRange>('30d');
 
   // Fetch filtered solves based on date range
-  const { solves, loading, error } = useFilteredSolves(dateRange);
+  const { solves, loading, error, refetch } = useFilteredSolves(dateRange);
+
+  // Subscribe to solve data changes - automatically refetch when solves are saved
+  useDataRefresh('solves', refetch);
 
   // Calculate current statistics
   const stats = useMemo(() => {
@@ -32,9 +36,14 @@ function DashboardPage() {
       };
     }
 
-    const pb = findPersonalBest(solves);
-    const ao5 = calculateAo5(solves);
-    const ao12 = calculateAo12(solves);
+    // Solves come from database in reverse chronological order (newest first)
+    // But statistics functions expect chronological order (oldest first)
+    // So we need to reverse the array
+    const chronologicalSolves = [...solves].reverse();
+
+    const pb = findPersonalBest(chronologicalSolves);
+    const ao5 = calculateAo5(chronologicalSolves);
+    const ao12 = calculateAo12(chronologicalSolves);
 
     return {
       pbSingle: pb?.time_ms || null,

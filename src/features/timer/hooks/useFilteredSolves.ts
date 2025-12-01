@@ -60,6 +60,7 @@ export function useFilteredSolves(dateRange: DateRange) {
     data: allSolves,
     loading,
     error,
+    execute: refetch,
   } = useAsync<SolveDTO[]>(
     async () => {
       if (!userId) return [];
@@ -91,5 +92,6 @@ export function useFilteredSolves(dateRange: DateRange) {
     solves: filteredSolves,
     loading,
     error,
+    refetch,
   };
 }
