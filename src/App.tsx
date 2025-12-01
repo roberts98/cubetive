@@ -12,6 +12,7 @@ import UpdatePasswordPage from './features/auth/pages/UpdatePasswordPage';
 import VerifyEmailPage from './features/auth/pages/VerifyEmailPage';
 import DashboardPage from './features/timer/pages/DashboardPage';
 import ProfilePage from './features/profile/pages/ProfilePage';
+import PublicProfilePage from './features/profile/pages/PublicProfilePage';
 import ProtectedRoute from './features/auth/components/ProtectedRoute';
 import { useAuthStore } from './features/auth/stores/authStore';
 
@@ -36,6 +37,7 @@ function App() {
           <Route path="/reset-password" element={<ResetPasswordPage />} />
           <Route path="/update-password" element={<UpdatePasswordPage />} />
           <Route path="/verify-email" element={<VerifyEmailPage />} />
+          <Route path="/profile/:username" element={<PublicProfilePage />} />
 
           {/* Protected routes */}
           <Route

@@ -14,7 +14,11 @@ import {
   Link as MuiLink,
   CircularProgress,
   Alert,
+  InputAdornment,
+  IconButton,
+  Tooltip,
 } from '@mui/material';
+import { ContentCopy as CopyIcon } from '@mui/icons-material';
 import { useState } from 'react';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../../auth/stores/authStore';
@@ -88,6 +92,20 @@ function ProfilePage() {
     } catch (error) {
       showError('Failed to update profile visibility');
       console.error('Failed to update visibility:', error);
+    }
+  };
+
+  const handleCopyProfileLink = async () => {
+    if (!profile) return;
+
+    const profileUrl = `${window.location.origin}/profile/${profile.username}`;
+
+    try {
+      await navigator.clipboard.writeText(profileUrl);
+      showSuccess('Profile link copied to clipboard');
+    } catch (error) {
+      showError('Failed to copy link');
+      console.error('Failed to copy profile link:', error);
     }
   };
 
@@ -209,9 +227,32 @@ function ProfilePage() {
               label="Make profile public"
               sx={{ mb: 2 }}
             />
-            <Typography variant="caption" color="text.secondary" display="block">
+            <Typography variant="caption" color="text.secondary" display="block" sx={{ mb: 2 }}>
               Public profiles can be shared via a unique URL
             </Typography>
+
+            {profile.profile_visibility && (
+              <TextField
+                fullWidth
+                label="Public Profile Link"
+                value={`${window.location.origin}/profile/${profile.username}`}
+                helperText="Share this link to let others view your public profile"
+                sx={{ mb: 2 }}
+                disabled
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <Tooltip title="Copy link">
+                        <IconButton onClick={handleCopyProfileLink} edge="end">
+                          <CopyIcon />
+                        </IconButton>
+                      </Tooltip>
+                    </InputAdornment>
+                  ),
+                }}
+              />
+            )}
+
             {updateError && (
               <Alert severity="error" sx={{ mt: 2 }}>
                 {updateError.message}
