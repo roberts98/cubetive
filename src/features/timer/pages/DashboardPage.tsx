@@ -1,14 +1,5 @@
-import {
-  Container,
-  Typography,
-  AppBar,
-  Toolbar,
-  Button,
-  Box,
-  Link as MuiLink,
-} from '@mui/material';
-import { Link as RouterLink, useNavigate } from 'react-router-dom';
-import { useAuthStore } from '../../auth/stores/authStore';
+import { Typography, Box } from '@mui/material';
+import { PageLayout } from '../../../shared/components';
 import ScrambleDisplay from '../components/ScrambleDisplay';
 import TimerDisplay from '../components/TimerDisplay';
 
@@ -19,43 +10,9 @@ import TimerDisplay from '../components/TimerDisplay';
  * Provides WCA-standard timing controls for speedcubing practice.
  */
 function DashboardPage() {
-  const navigate = useNavigate();
-  const signOut = useAuthStore((state) => state.signOut);
-
-  const handleLogout = async () => {
-    try {
-      await signOut();
-      navigate('/login');
-    } catch (error) {
-      console.error('Logout failed:', error);
-    }
-  };
-
   return (
-    <Box sx={{ flexGrow: 1, minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
-      {/* Navigation Bar */}
-      <AppBar position="static">
-        <Toolbar>
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            Cubetive
-          </Typography>
-          <MuiLink
-            component={RouterLink}
-            to="/profile"
-            color="inherit"
-            underline="none"
-            sx={{ mr: 2 }}
-          >
-            Profile
-          </MuiLink>
-          <Button color="inherit" onClick={handleLogout}>
-            Logout
-          </Button>
-        </Toolbar>
-      </AppBar>
-
-      {/* Main Content - Timer Interface */}
-      <Container maxWidth="md" sx={{ mt: 4, mb: 4, flexGrow: 1 }}>
+    <PageLayout maxWidth="md" fullHeight>
+      <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '70vh' }}>
         {/* Scramble Display */}
         <ScrambleDisplay />
 
@@ -77,8 +34,8 @@ function DashboardPage() {
             4. Your time will be automatically saved
           </Typography>
         </Box>
-      </Container>
-    </Box>
+      </Box>
+    </PageLayout>
   );
 }
 
