@@ -68,7 +68,7 @@ describe('authStore', () => {
     it('should initialize with existing session', async () => {
       vi.mocked(AuthService.getSession).mockResolvedValue(mockSession);
       vi.mocked(supabase.auth.onAuthStateChange).mockReturnValue({
-        data: { subscription: { unsubscribe: vi.fn() } },
+        data: { subscription: { id: 'test-id', callback: vi.fn(), unsubscribe: vi.fn() } },
       } as ReturnType<typeof supabase.auth.onAuthStateChange>);
 
       const { result } = renderHook(() => useAuthStore());
@@ -88,7 +88,7 @@ describe('authStore', () => {
     it('should initialize with no session', async () => {
       vi.mocked(AuthService.getSession).mockResolvedValue(null);
       vi.mocked(supabase.auth.onAuthStateChange).mockReturnValue({
-        data: { subscription: { unsubscribe: vi.fn() } },
+        data: { subscription: { id: 'test-id', callback: vi.fn(), unsubscribe: vi.fn() } },
       } as ReturnType<typeof supabase.auth.onAuthStateChange>);
 
       const { result } = renderHook(() => useAuthStore());
@@ -142,7 +142,7 @@ describe('authStore', () => {
       vi.mocked(supabase.auth.onAuthStateChange).mockImplementation((callback) => {
         authStateCallback = callback;
         return {
-          data: { subscription: { unsubscribe: vi.fn() } },
+          data: { subscription: { id: 'test-id', callback: vi.fn(), unsubscribe: vi.fn() } },
         } as ReturnType<typeof supabase.auth.onAuthStateChange>;
       });
 
@@ -169,7 +169,7 @@ describe('authStore', () => {
       vi.mocked(supabase.auth.onAuthStateChange).mockImplementation((callback) => {
         authStateCallback = callback;
         return {
-          data: { subscription: { unsubscribe: vi.fn() } },
+          data: { subscription: { id: 'test-id', callback: vi.fn(), unsubscribe: vi.fn() } },
         } as ReturnType<typeof supabase.auth.onAuthStateChange>;
       });
 

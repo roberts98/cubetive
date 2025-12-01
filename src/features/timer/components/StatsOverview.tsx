@@ -96,7 +96,7 @@ function StatsOverview({ pbSingle, currentAo5, currentAo12, totalSolves }: Stats
         Statistics Overview
       </Typography>
       <Grid container spacing={2}>
-        <Grid item xs={12} sm={6} md={3}>
+        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
           <StatCard
             icon={<TrophyIcon />}
             label="Personal Best"
@@ -104,7 +104,7 @@ function StatsOverview({ pbSingle, currentAo5, currentAo12, totalSolves }: Stats
             color="warning.main"
           />
         </Grid>
-        <Grid item xs={12} sm={6} md={3}>
+        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
           <StatCard
             icon={<SpeedIcon />}
             label="Current Ao5"
@@ -112,7 +112,7 @@ function StatsOverview({ pbSingle, currentAo5, currentAo12, totalSolves }: Stats
             color="primary.main"
           />
         </Grid>
-        <Grid item xs={12} sm={6} md={3}>
+        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
           <StatCard
             icon={<AvgIcon />}
             label="Current Ao12"
@@ -120,7 +120,7 @@ function StatsOverview({ pbSingle, currentAo5, currentAo12, totalSolves }: Stats
             color="secondary.main"
           />
         </Grid>
-        <Grid item xs={12} sm={6} md={3}>
+        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
           <StatCard
             icon={<ChartIcon />}
             label="Total Solves"

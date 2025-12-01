@@ -379,7 +379,9 @@ describe('useFormSubmit', () => {
         password: string;
       }
 
-      const mockSubmitFn = vi.fn<[FormData], Promise<string>>().mockResolvedValue('Success');
+      const mockSubmitFn = vi
+        .fn<(data: FormData) => Promise<string>>()
+        .mockResolvedValue('Success');
       const wrappedFn = result.current.handleFormSubmit<FormData>(mockSubmitFn);
 
       await act(async () => {
@@ -403,7 +405,9 @@ describe('useFormSubmit', () => {
         settings: string[];
       }
 
-      const mockSubmitFn = vi.fn<[ComplexData], Promise<void>>().mockResolvedValue();
+      const mockSubmitFn = vi
+        .fn<(data: ComplexData) => Promise<void>>()
+        .mockResolvedValue(undefined);
       const wrappedFn = result.current.handleFormSubmit<ComplexData>(mockSubmitFn);
 
       const testData: ComplexData = {
