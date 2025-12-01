@@ -5,6 +5,11 @@ interface StatisticItem {
   label: string;
   timeMs: number | null;
   date?: string | null;
+  /**
+   * If true, displays as plain number instead of time format
+   * @default false
+   */
+  isCount?: boolean;
 }
 
 interface StatisticsGridProps {
@@ -36,6 +41,7 @@ interface StatisticsGridProps {
  *
  * Reusable grid layout for displaying personal best statistics.
  * Responsive design with customizable columns.
+ * Supports both time-based statistics and plain count statistics.
  *
  * @example
  * // Basic usage
@@ -44,7 +50,7 @@ interface StatisticsGridProps {
  *     { label: 'Best Single', timeMs: 12345 },
  *     { label: 'Best Ao5', timeMs: 15000 },
  *     { label: 'Best Ao12', timeMs: 16000 },
- *     { label: 'Total Solves', timeMs: 100 }
+ *     { label: 'Total Solves', timeMs: 100, isCount: true }
  *   ]}
  * />
  *
@@ -82,7 +88,18 @@ function StatisticsGrid({
           <Typography variant="subtitle2" color="text.secondary" gutterBottom>
             {stat.label}
           </Typography>
-          <TimeDisplay timeMs={stat.timeMs} />
+          {stat.isCount ? (
+            <Typography
+              variant="h5"
+              sx={{
+                fontWeight: 'medium',
+              }}
+            >
+              {stat.timeMs ?? '—'}
+            </Typography>
+          ) : (
+            <TimeDisplay timeMs={stat.timeMs} />
+          )}
           {showDates && stat.date && (
             <Typography variant="caption" color="text.secondary" display="block" sx={{ mt: 0.5 }}>
               {new Date(stat.date).toLocaleDateString()}

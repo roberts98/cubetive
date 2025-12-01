@@ -11,6 +11,7 @@ import SolveHistoryTable from '../components/SolveHistoryTable';
 import { useSolveHistory } from '../hooks/useSolveHistory';
 import { useSolveCount } from '../hooks/useSolveCount';
 import { useDeleteSolve } from '../hooks/useDeleteSolve';
+import { useProfileStatsSync } from '../hooks/useProfileStatsSync';
 import { showSuccess, showError } from '../../../shared/utils/notifications';
 
 const PAGE_SIZE = 50;
@@ -47,6 +48,9 @@ function HistoryPage() {
   // Delete solve hook
   const { execute: performDelete } = useDeleteSolve();
 
+  // Profile stats sync hook (for recalculating stats after deletion)
+  const { syncAfterSolve } = useProfileStatsSync();
+
   // Refetch data when page changes
   useEffect(() => {
     void refetchSolves();
@@ -72,6 +76,9 @@ function HistoryPage() {
 
       // Refetch data to update the list and count
       await Promise.all([refetchSolves(), refetchCount()]);
+
+      // Recalculate and update profile statistics after deletion
+      await syncAfterSolve();
 
       // If current page is now empty and not the first page, go to previous page
       if (solves && solves.length === 1 && currentPage > 1) {

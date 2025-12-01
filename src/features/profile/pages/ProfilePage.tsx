@@ -213,7 +213,12 @@ function ProfilePage() {
                     timeMs: profile.pb_ao12,
                     date: profile.pb_ao12_date,
                   },
-                  { label: 'Total Solves', timeMs: profile.total_solves, date: null },
+                  {
+                    label: 'Total Solves',
+                    timeMs: profile.total_solves,
+                    date: null,
+                    isCount: true,
+                  },
                 ]}
                 showDates
                 columns={{ xs: '1fr', sm: '1fr', md: 'repeat(2, 1fr)' }}
