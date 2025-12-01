@@ -42,21 +42,14 @@ function TimerDisplay() {
   };
 
   /**
-   * Formats last solve time for display
-   */
-  const formatLastSolve = (ms: number): string => {
-    const totalSeconds = ms / 1000;
-    const seconds = Math.floor(totalSeconds);
-    const hundredths = Math.floor((totalSeconds - seconds) * 100);
-    return `${seconds}.${hundredths.toString().padStart(2, '0')}`;
-  };
-
-  /**
    * Determines what time to display
    */
   const getDisplayTime = () => {
     if (state === 'stopped' && lastSolveTime !== null) {
-      return formatLastSolve(lastSolveTime);
+      const totalSeconds = lastSolveTime / 1000;
+      const seconds = Math.floor(totalSeconds);
+      const hundredths = Math.floor((totalSeconds - seconds) * 100);
+      return `${seconds}.${hundredths.toString().padStart(2, '0')}`;
     }
     if (state === 'running') {
       return formattedTime;
