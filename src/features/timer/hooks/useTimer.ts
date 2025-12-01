@@ -17,7 +17,7 @@ import { useAuthStore } from '../../auth/stores/authStore';
 import { saveSolve } from '../services/solvesService';
 import { useScramble } from './useScramble';
 import { useProfileStatsSync } from './useProfileStatsSync';
-import type { TimerState } from '../types/timer.types';
+import type { TimerState, PenaltyType } from '../types/timer.types';
 
 const READY_DELAY_MS = 500; // 0.5 seconds hold before ready
 
@@ -26,6 +26,7 @@ interface UseTimerReturn {
   elapsedTime: number;
   formattedTime: string;
   lastSolveTime: number | null;
+  saveSolveWithPenalty: (penaltyType: PenaltyType) => Promise<void>;
 }
 
 /**
@@ -97,7 +98,7 @@ export function useTimer(): UseTimerReturn {
   /**
    * Saves the completed solve to database and syncs profile stats
    */
-  const saveSolveToDatabase = async (timeMs: number) => {
+  const saveSolveToDatabase = async (timeMs: number, penaltyType: PenaltyType) => {
     try {
       // Get current user from auth store
       const user = useAuthStore.getState().user;
@@ -117,6 +118,7 @@ export function useTimer(): UseTimerReturn {
       console.log('Saving solve:', {
         time_ms: roundedTime,
         scramble: useTimerStore.getState().currentScramble,
+        penalty_type: penaltyType,
         user_id: user.id,
       });
 
@@ -125,7 +127,7 @@ export function useTimer(): UseTimerReturn {
         user_id: user.id,
         time_ms: roundedTime,
         scramble: useTimerStore.getState().currentScramble,
-        penalty_type: null,
+        penalty_type: penaltyType,
       });
 
       // Sync profile stats after successful save
@@ -177,8 +179,8 @@ export function useTimer(): UseTimerReturn {
       const finalTime = currentElapsedTime;
       setLastSolveTime(finalTime);
 
-      // Save solve asynchronously
-      saveSolveToDatabase(finalTime);
+      // Don't save immediately - wait for penalty selection
+      // User will use PenaltyButtons component to select penalty and save
     }
   };
 
@@ -210,12 +212,31 @@ export function useTimer(): UseTimerReturn {
 
       // Start animation loop
       animationFrameRef.current = requestAnimationFrame(updateElapsedTime);
-    } else if (currentState === 'stopped') {
-      // Reset to idle for next solve
-      setState('idle');
-      setElapsedTime(0);
-      setStartTime(null);
     }
+    // Note: 'stopped' state is handled by PenaltyButtons component
+    // User selects penalty, then saveSolveWithPenalty resets to idle
+  };
+
+  /**
+   * Public function to save solve with penalty
+   * Called by PenaltyButtons component after user selects penalty
+   */
+  const saveSolveWithPenalty = async (penaltyType: PenaltyType) => {
+    const currentLastSolveTime = useTimerStore.getState().lastSolveTime;
+
+    if (currentLastSolveTime === null) {
+      console.error('No solve time to save');
+      return;
+    }
+
+    // Save the solve with the selected penalty
+    await saveSolveToDatabase(currentLastSolveTime, penaltyType);
+
+    // Reset timer to idle state for next solve
+    setState('idle');
+    setElapsedTime(0);
+    setStartTime(null);
+    setLastSolveTime(null);
   };
 
   /**
@@ -246,5 +267,6 @@ export function useTimer(): UseTimerReturn {
     elapsedTime,
     formattedTime: formatTime(elapsedTime),
     lastSolveTime,
+    saveSolveWithPenalty,
   };
 }
