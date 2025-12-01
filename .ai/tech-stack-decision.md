@@ -1,23 +1,29 @@
 # Tech Stack Decision - Cubetive MVP
 
-## Chosen Stack
+## Chosen Stack (Updated 2025-12-01)
 
 **Frontend:**
 
-- React 19
+- React 19 with React Compiler (babel-plugin-react-compiler)
 - TypeScript 5.9
-- Material UI 7
+- Vite (rolldown-vite 7.2.5)
+- Material UI 7.3.5
+- React Router 7.9.6
+- React Hook Form 7.67.0 + Zod 4.1.13
+- Zustand 5.0.9 (state management)
+- react-toastify 11.0.5 (notifications)
+- cubing 0.56.0 (scramble generation)
 
 **Backend:**
 
-- Supabase (Database + Auth + Real-time + Auto-generated API)
+- Supabase 2.86.0 (Database + Auth + Real-time + Auto-generated API)
 
 **Testing:**
 
 - Vitest 4 (unit test runner)
 - React Testing Library 16 (component testing)
-- happy-dom (lightweight DOM for testing)
-- Playwright or Cypress (E2E testing - planned)
+- happy-dom 20 (lightweight DOM for testing)
+- Playwright 1.57.0 (E2E testing)
 
 **Hosting & CI/CD:**
 

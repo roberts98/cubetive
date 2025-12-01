@@ -1,5 +1,45 @@
 # Product Requirements Document (PRD) - Cubetive
 
+**Last Updated:** 2025-12-01
+
+## Implementation Status Summary
+
+**Overall MVP Progress:** ~75% Complete
+
+### ✅ Fully Implemented Features
+
+- **Authentication System** (US-001 to US-004): Registration, login, email verification, password reset
+- **Core Timer** (US-006 to US-008): WCA-standard timer with spacebar controls, scramble generation, automatic solve saving
+- **Profile Management** (US-005, US-013, US-017): Profile page with visibility toggle, stats display (PB, Ao5, Ao12)
+- **Statistics Calculations** (US-016): All averages (Ao5, Ao12, Ao100) with WCA-compliant logic
+- **Database & Backend**: Complete schema, RLS policies, service layer for all operations
+
+### ⚠️ Partially Implemented Features
+
+- **Penalty System** (US-009, US-010): Backend ready, UI missing (PenaltyButtons component)
+- **Session Statistics** (US-012): Calculations ready, UI display missing (SessionStats component)
+- **Personal Records** (US-013): Display working, auto-update after solves not integrated
+
+### ❌ Not Implemented Features
+
+- **Public Profile Sharing** (US-018, US-019): No `/profile/:username` route or page
+- **Solve History** (US-014): No history page or components
+- **Visual Charts** (US-015): No charting library or analytics page
+- **Solve Deletion UI** (US-011): Backend ready, no UI
+- **Storage Limit Warnings** (US-021): No implementation
+- **Change Password** (US-004): UI placeholder only, no functionality
+- **Delete Account** (US-005): UI placeholder only, no functionality
+
+### Critical Path to MVP
+
+1. **Display session stats on dashboard** - Add SessionStats and RecentSolvesList components
+2. **Add penalty buttons** - Create PenaltyButtons component
+3. **Create public profile page** - Implement `/profile/:username` route
+4. **Build solve history page** - Create HistoryPage with pagination
+5. **Add visual charts** - Install charting library and create ProgressChart component
+
+---
+
 ## 1. Product Overview
 
 ### Product Name
@@ -303,14 +343,20 @@ Existing tools don't adapt to user skill levels or provide guidance for improvem
 - Title: Update Profile Settings
 - Description: As a logged-in user, I want to manage my profile settings
 - Acceptance Criteria:
-  - User can view their username (read-only, cannot be changed)
-  - User can toggle profile visibility (public/private)
-  - User can view their email address (read-only, cannot be changed)
-  - User can change password (requires current password)
-  - Changes are saved with confirmation message
-  - User can delete account with confirmation dialog
+  - ✅ User can view their username (read-only, cannot be changed)
+  - ✅ User can toggle profile visibility (public/private) - **IMPLEMENTED**
+  - ✅ User can view their email address (read-only, cannot be changed)
+  - ❌ User can change password (requires current password) - **NOT IMPLEMENTED** (button disabled)
+  - ✅ Changes are saved with confirmation message
+  - ❌ User can delete account with confirmation dialog - **NOT IMPLEMENTED** (button disabled)
 
 **Note:** Username changes are NOT supported. Usernames are permanently assigned at registration.
+
+**Implementation Status (2025-12-01):**
+
+- Profile visibility toggle is fully functional with toast notifications
+- Change password and delete account features are planned but not yet implemented
+- UI placeholders exist for future functionality
 
 ### Timer Functionality
 
@@ -319,72 +365,108 @@ Existing tools don't adapt to user skill levels or provide guidance for improvem
 - Title: Begin Timing Practice
 - Description: As a user, I want to start a solving session to practice my cube solving
 - Acceptance Criteria:
-  - Timer interface loads as default view after login
-  - Initial scramble is displayed automatically
-  - Timer shows 0.00 format when ready
-  - Instructions for spacebar control are visible
-  - Timer is accessible via keyboard only
+  - ✅ Timer interface loads as default view after login - **IMPLEMENTED**
+  - ✅ Initial scramble is displayed automatically - **IMPLEMENTED**
+  - ✅ Timer shows 0.00 format when ready - **IMPLEMENTED**
+  - ✅ Instructions for spacebar control are visible - **IMPLEMENTED**
+  - ✅ Timer is accessible via keyboard only - **IMPLEMENTED**
+
+**Implementation Status (2025-12-01):** ✅ FULLY IMPLEMENTED
+
+- WCA-standard spacebar controls working
+- Visual state indicators (green when ready)
+- Automatic scramble generation using `cubing` library
 
 #### US-007: Generate Scramble
 
 - Title: Get New Scramble
 - Description: As a user, I want to receive a random scramble for my solve
 - Acceptance Criteria:
-  - Scramble uses standard WCA notation
-  - Scramble is exactly 20 moves for 3x3
-  - Scramble is displayed clearly above timer
-  - New scramble generates after each solve
-  - User can manually generate new scramble
-  - Scramble is saved with solve time
+  - ✅ Scramble uses standard WCA notation - **IMPLEMENTED**
+  - ✅ Scramble is exactly 20 moves for 3x3 - **IMPLEMENTED**
+  - ✅ Scramble is displayed clearly above timer - **IMPLEMENTED**
+  - ✅ New scramble generates after each solve - **IMPLEMENTED**
+  - ❌ User can manually generate new scramble - **NOT IMPLEMENTED** (auto-generates only)
+  - ✅ Scramble is saved with solve time - **IMPLEMENTED**
+
+**Implementation Status (2025-12-01):** ✅ MOSTLY COMPLETE
+
+- Uses `cubing` library (v0.56.0) for WCA-compliant scrambles
+- Automatic generation after each solve save
+- Manual regeneration button not yet added to UI
 
 #### US-008: Time a Solve
 
 - Title: Record Solve Time
 - Description: As a user, I want to time my solve using standard controls
 - Acceptance Criteria:
-  - Pressing spacebar starts 0.5-second ready phase
-  - Timer turns green when ready to start
-  - Releasing spacebar starts timer
-  - Timer displays running time in seconds.milliseconds
-  - Pressing spacebar stops timer
-  - Final time is displayed prominently
-  - Time is automatically saved to history
+  - ✅ Pressing spacebar starts 0.5-second ready phase - **IMPLEMENTED**
+  - ✅ Timer turns green when ready to start - **IMPLEMENTED**
+  - ✅ Releasing spacebar starts timer - **IMPLEMENTED**
+  - ✅ Timer displays running time in seconds.milliseconds - **IMPLEMENTED**
+  - ✅ Pressing spacebar stops timer - **IMPLEMENTED**
+  - ✅ Final time is displayed prominently - **IMPLEMENTED**
+  - ✅ Time is automatically saved to history - **IMPLEMENTED**
+
+**Implementation Status (2025-12-01):** ✅ FULLY IMPLEMENTED
+
+- WCA-standard timing controls with 0.5s ready delay
+- High-precision timing using `performance.now()`
+- Automatic save to database via Supabase
+- Visual state feedback (idle → ready → running → stopped)
 
 #### US-009: Apply DNF Penalty
 
 - Title: Mark Failed Solve
 - Description: As a user, I want to mark a solve as DNF when I couldn't complete it
 - Acceptance Criteria:
-  - DNF button is accessible after solve
-  - DNF can be toggled on/off for recent solve
-  - DNF solves show "DNF" instead of time
-  - DNF solves are excluded from averages
-  - DNF status is saved with solve record
-  - Visual indicator distinguishes DNF solves
+  - ❌ DNF button is accessible after solve - **NOT IMPLEMENTED** (UI missing)
+  - ❌ DNF can be toggled on/off for recent solve - **NOT IMPLEMENTED** (UI missing)
+  - ❌ DNF solves show "DNF" instead of time - **NOT IMPLEMENTED** (UI missing)
+  - ✅ DNF solves are excluded from averages - **IMPLEMENTED** (logic exists)
+  - ✅ DNF status is saved with solve record - **IMPLEMENTED** (backend ready)
+  - ❌ Visual indicator distinguishes DNF solves - **NOT IMPLEMENTED** (UI missing)
+
+**Implementation Status (2025-12-01):** ⚠️ PARTIAL
+
+- Backend service method `updateSolvePenalty()` exists and working
+- Statistics calculations properly handle DNF in averages
+- UI components (PenaltyButtons.tsx) not yet created
 
 #### US-010: Apply +2 Penalty
 
 - Title: Add Time Penalty
 - Description: As a user, I want to add a +2 penalty for misaligned cube finish
 - Acceptance Criteria:
-  - +2 button is accessible after solve
-  - +2 can be toggled on/off for recent solve
-  - Penalized time shows original time +2.00
-  - +2 indicator is visible on solve
-  - Penalized time is used in averages
-  - Penalty status is saved with solve record
+  - ❌ +2 button is accessible after solve - **NOT IMPLEMENTED** (UI missing)
+  - ❌ +2 can be toggled on/off for recent solve - **NOT IMPLEMENTED** (UI missing)
+  - ❌ Penalized time shows original time +2.00 - **NOT IMPLEMENTED** (UI missing)
+  - ❌ +2 indicator is visible on solve - **NOT IMPLEMENTED** (UI missing)
+  - ✅ Penalized time is used in averages - **IMPLEMENTED** (logic exists)
+  - ✅ Penalty status is saved with solve record - **IMPLEMENTED** (backend ready)
+
+**Implementation Status (2025-12-01):** ⚠️ PARTIAL
+
+- Backend service method `updateSolvePenalty()` exists and working
+- Statistics calculations properly add 2000ms to time_ms
+- UI components (PenaltyButtons.tsx) not yet created
 
 #### US-011: Delete Solve
 
 - Title: Remove Solve Time
 - Description: As a user, I want to delete a solve time from my history
 - Acceptance Criteria:
-  - Delete option available for each solve in history
-  - Confirmation dialog prevents accidental deletion
-  - Deleted solve is immediately removed from display
-  - Statistics recalculate after deletion
-  - Deletion cannot be undone
-  - User can delete most recent solve
+  - ❌ Delete option available for each solve in history - **NOT IMPLEMENTED** (no history page)
+  - ❌ Confirmation dialog prevents accidental deletion - **NOT IMPLEMENTED**
+  - ❌ Deleted solve is immediately removed from display - **NOT IMPLEMENTED**
+  - ❌ Statistics recalculate after deletion - **NOT IMPLEMENTED**
+  - ✅ Deletion cannot be undone - **IMPLEMENTED** (soft delete via `deleted_at`)
+  - ❌ User can delete most recent solve - **NOT IMPLEMENTED** (UI missing)
+
+**Implementation Status (2025-12-01):** ⚠️ PARTIAL
+
+- Backend service method `deleteSolve()` exists (soft delete)
+- No UI for solve history or deletion yet
 
 ### Statistics and Progress Tracking
 
@@ -393,60 +475,92 @@ Existing tools don't adapt to user skill levels or provide guidance for improvem
 - Title: See Session Statistics
 - Description: As a user, I want to see my current session statistics
 - Acceptance Criteria:
-  - Current session shows last 5 solves
-  - Current Ao5 is displayed if 5+ solves
-  - Current Ao12 is displayed if 12+ solves
-  - Session best and worst times are highlighted
-  - Statistics update immediately after each solve
-  - Session can be cleared/reset
+  - ❌ Current session shows last 5 solves - **NOT IMPLEMENTED** (UI missing)
+  - ❌ Current Ao5 is displayed if 5+ solves - **NOT IMPLEMENTED** (UI missing)
+  - ❌ Current Ao12 is displayed if 12+ solves - **NOT IMPLEMENTED** (UI missing)
+  - ❌ Session best and worst times are highlighted - **NOT IMPLEMENTED** (UI missing)
+  - ❌ Statistics update immediately after each solve - **NOT IMPLEMENTED** (UI missing)
+  - ❌ Session can be cleared/reset - **NOT IMPLEMENTED**
+
+**Implementation Status (2025-12-01):** ⚠️ BACKEND READY, UI MISSING
+
+- Statistics calculation functions (`calculateAo5`, `calculateAo12`) fully working
+- Service methods (`getRecentSolves`) exist
+- UI components (RecentSolvesList.tsx, SessionStats.tsx) not created yet
 
 #### US-013: View Personal Records
 
 - Title: Track Best Performances
 - Description: As a user, I want to see my all-time best performances
 - Acceptance Criteria:
-  - Personal best single time is displayed
-  - Best Ao5 is shown with date achieved
-  - Best Ao12 is shown with date achieved
-  - Records update automatically when beaten
-  - Visual celebration when new record is set
-  - Records persist across sessions
+  - ✅ Personal best single time is displayed - **IMPLEMENTED** (ProfilePage.tsx)
+  - ✅ Best Ao5 is shown with date achieved - **IMPLEMENTED** (ProfilePage.tsx)
+  - ✅ Best Ao12 is shown with date achieved - **IMPLEMENTED** (ProfilePage.tsx)
+  - ❌ Records update automatically when beaten - **NOT IMPLEMENTED** (manual update needed)
+  - ❌ Visual celebration when new record is set - **NOT IMPLEMENTED**
+  - ✅ Records persist across sessions - **IMPLEMENTED** (stored in profiles table)
+
+**Implementation Status (2025-12-01):** ⚠️ PARTIAL
+
+- Profile page displays PB single, Ao5, Ao12 with dates
+- Statistics stored in database (`pb_single`, `pb_ao5`, `pb_ao12`)
+- Auto-update logic after solves not yet integrated
+- PB detection functions (`findPersonalBest`, `isNewPersonalBest`) exist and working
 
 #### US-014: View Solve History
 
 - Title: Browse Past Solves
 - Description: As a user, I want to view my complete solve history
 - Acceptance Criteria:
-  - History shows all solves chronologically
-  - Each solve displays time, date, and scramble
-  - Penalties (DNF/+2) are clearly marked
-  - History supports pagination (50 per page)
-  - User can navigate to specific dates
-  - Total solve count is displayed
+  - ❌ History shows all solves chronologically - **NOT IMPLEMENTED** (no page exists)
+  - ❌ Each solve displays time, date, and scramble - **NOT IMPLEMENTED**
+  - ❌ Penalties (DNF/+2) are clearly marked - **NOT IMPLEMENTED**
+  - ❌ History supports pagination (50 per page) - **NOT IMPLEMENTED**
+  - ❌ User can navigate to specific dates - **NOT IMPLEMENTED**
+  - ❌ Total solve count is displayed - **NOT IMPLEMENTED** (stat exists but not shown)
+
+**Implementation Status (2025-12-01):** ❌ NOT IMPLEMENTED
+
+- Backend service `getUserSolves()` exists with pagination support
+- No `/history` route or page component exists
+- `total_solves` tracked in profile but no UI display
 
 #### US-015: View Progress Charts
 
 - Title: Analyze Improvement Trends
 - Description: As a user, I want to see visual charts of my progress
 - Acceptance Criteria:
-  - Line chart shows solve times over time
-  - Chart includes moving average trend line
-  - Date range can be customized
-  - Chart is responsive and interactive
-  - Key statistics are highlighted
-  - Chart updates with new solves
+  - ❌ Line chart shows solve times over time - **NOT IMPLEMENTED**
+  - ❌ Chart includes moving average trend line - **NOT IMPLEMENTED**
+  - ❌ Date range can be customized - **NOT IMPLEMENTED**
+  - ❌ Chart is responsive and interactive - **NOT IMPLEMENTED**
+  - ❌ Key statistics are highlighted - **NOT IMPLEMENTED**
+  - ❌ Chart updates with new solves - **NOT IMPLEMENTED**
+
+**Implementation Status (2025-12-01):** ❌ NOT IMPLEMENTED
+
+- No charting library installed yet
+- No analytics/charts page or components exist
+- Data retrieval methods exist, but no visualization
 
 #### US-016: Calculate Running Averages
 
 - Title: See Standard Averages
 - Description: As a user, I want to see my running averages calculated correctly
 - Acceptance Criteria:
-  - Ao5 excludes best and worst of 5 solves
-  - Ao12 excludes best and worst of 12 solves
-  - Ao100 excludes best 5 and worst 5 of 100 solves
-  - DNF counts as worst in average calculations
-  - Averages update after each solve
-  - Insufficient solves show "N/A"
+  - ✅ Ao5 excludes best and worst of 5 solves - **IMPLEMENTED**
+  - ✅ Ao12 excludes best and worst of 12 solves - **IMPLEMENTED**
+  - ✅ Ao100 excludes best 5 and worst 5 of 100 solves - **IMPLEMENTED**
+  - ✅ DNF counts as worst in average calculations - **IMPLEMENTED**
+  - ❌ Averages update after each solve - **NOT IMPLEMENTED** (UI missing)
+  - ❌ Insufficient solves show "N/A" - **NOT IMPLEMENTED** (UI missing)
+
+**Implementation Status (2025-12-01):** ✅ CALCULATIONS COMPLETE, UI MISSING
+
+- All statistics functions fully implemented in `statistics.ts`
+- Comprehensive unit tests with 100% coverage
+- WCA-standard algorithms working correctly
+- No UI to display running averages yet (SessionStats component not created)
 
 ### Social Features
 
@@ -455,36 +569,56 @@ Existing tools don't adapt to user skill levels or provide guidance for improvem
 - Title: Share Profile Publicly
 - Description: As a user, I want to make my profile public to share achievements
 - Acceptance Criteria:
-  - Toggle switch in settings controls visibility
-  - Public profiles get unique shareable URL
-  - Confirmation dialog explains what will be shared
-  - Change takes effect immediately
-  - User can revert to private anytime
-  - Default state is private
+  - ✅ Toggle switch in settings controls visibility - **IMPLEMENTED**
+  - ❌ Public profiles get unique shareable URL - **NOT IMPLEMENTED** (no public page)
+  - ❌ Confirmation dialog explains what will be shared - **NOT IMPLEMENTED**
+  - ✅ Change takes effect immediately - **IMPLEMENTED**
+  - ✅ User can revert to private anytime - **IMPLEMENTED**
+  - ✅ Default state is private - **IMPLEMENTED**
 
-#### US-018: View Public Profile
+**Implementation Status (2025-12-01):** ⚠️ PARTIAL
+
+- Profile visibility toggle fully functional in ProfilePage.tsx
+- Toast notifications confirm changes
+- Database field `profile_visibility` working
+- No public profile page to actually view shared profiles yet
+
+#### US-18: View Public Profile
 
 - Title: Access Shared Profile
 - Description: As anyone with the link, I want to view a public profile
 - Acceptance Criteria:
-  - Public profile loads without authentication
-  - Profile shows username and join date
-  - Best single time is displayed
-  - Best Ao5 is displayed
-  - Recent activity shows last 10 solves
-  - Private profiles show "Profile is private" message
+  - ❌ Public profile loads without authentication - **NOT IMPLEMENTED**
+  - ❌ Profile shows username and join date - **NOT IMPLEMENTED**
+  - ❌ Best single time is displayed - **NOT IMPLEMENTED**
+  - ❌ Best Ao5 is displayed - **NOT IMPLEMENTED**
+  - ❌ Recent activity shows last 10 solves - **NOT IMPLEMENTED**
+  - ❌ Private profiles show "Profile is private" message - **NOT IMPLEMENTED**
+
+**Implementation Status (2025-12-01):** ❌ NOT IMPLEMENTED
+
+- No `/profile/:username` route exists in App.tsx
+- No PublicProfilePage component created
+- Database RLS policies support public profile viewing
+- Service method for public profile lookup not created
 
 #### US-019: Share Profile Link
 
 - Title: Get Shareable URL
 - Description: As a user with a public profile, I want to share my profile link
 - Acceptance Criteria:
-  - Copy link button in profile settings
-  - Link format is clean and memorable
-  - Link works when profile is public
-  - Copied confirmation appears briefly
-  - Link remains stable (doesn't change)
-  - QR code generation (future)
+  - ❌ Copy link button in profile settings - **NOT IMPLEMENTED**
+  - ❌ Link format is clean and memorable - **NOT IMPLEMENTED**
+  - ❌ Link works when profile is public - **NOT IMPLEMENTED**
+  - ❌ Copied confirmation appears briefly - **NOT IMPLEMENTED**
+  - ❌ Link remains stable (doesn't change) - **NOT IMPLEMENTED**
+  - ❌ QR code generation (future) - **NOT PLANNED FOR MVP**
+
+**Implementation Status (2025-12-01):** ❌ NOT IMPLEMENTED
+
+- Depends on US-018 (public profile page)
+- Username is stable and suitable for URL (no changes allowed)
+- Copy-to-clipboard functionality needs to be added
 
 ### Data Management
 
